@@ -1960,27 +1960,31 @@
       );
       document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-      // active nav link by section
-      const sections = ["about", "services", "location", "contact"].map((id) =>
-        document.getElementById(id),
-      );
+      // active nav link by section — driven by scroll position
+      // (more reliable than IntersectionObserver for this case: always
+      // exactly one section is "current", no flicker between adjacent
+      // sections, no dead zones at the top/bottom of the page)
+      const sections = ["about", "services", "location", "contact"]
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
       const links = [...document.querySelectorAll(".nav-link")];
-      const spy = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((en) => {
-            if (en.isIntersecting) {
-              links.forEach((l) =>
-                l.classList.toggle(
-                  "active",
-                  l.getAttribute("href") === "#" + en.target.id,
-                ),
-              );
-            }
-          });
-        },
-        { rootMargin: "-40% 0px -55% 0px" },
-      );
-      sections.forEach((s) => s && spy.observe(s));
+      const updateActive = () => {
+        const probe = window.scrollY + nav.offsetHeight + 40;
+        let current = null;
+        for (const s of sections) {
+          if (s.offsetTop <= probe) current = s;
+        }
+        const id = current ? "#" + current.id : null;
+        links.forEach((l) =>
+          l.classList.toggle(
+            "active",
+            id !== null && l.getAttribute("href") === id,
+          ),
+        );
+      };
+      document.addEventListener("scroll", updateActive, { passive: true });
+      window.addEventListener("resize", updateActive);
+      updateActive();
     </script>
   </body>
 </html>
