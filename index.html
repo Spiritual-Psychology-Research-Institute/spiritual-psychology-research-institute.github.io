@@ -557,8 +557,10 @@
         padding: 18px 22px;
         border-radius: 14px;
         box-shadow: 0 16px 40px -20px rgba(31, 42, 35, 0.35);
-        max-width: 230px;
+        /* never spill past viewport at narrow widths / accessibility zoom */
+        max-width: min(230px, calc(100vw - 32px));
         backdrop-filter: blur(2px);
+        word-break: keep-all;
       }
       .ki-card .glyph {
         font-family: "Noto Serif KR", serif;
@@ -588,11 +590,12 @@
         color: #f4efe6;
         padding: 16px 22px;
         border-radius: 14px 14px 14px 4px;
-        max-width: 260px;
+        max-width: min(260px, calc(100vw - 32px));
         font-size: 13px;
         line-height: 1.75;
         font-family: "Noto Serif KR", serif;
         font-weight: 300;
+        word-break: keep-all;
       }
       .ki-quote .who {
         display: block;
@@ -1331,11 +1334,12 @@
           justify-self: center;
           max-width: 380px;
         }
+        /* tablet: tuck cards just inside the frame so they don't clip */
         .ki-card {
-          left: -12px;
+          left: 8px;
         }
         .ki-quote {
-          right: -12px;
+          right: 8px;
         }
         section {
           padding: 100px 22px;
@@ -1368,6 +1372,41 @@
           flex-direction: column;
           gap: 12px;
           text-align: center;
+        }
+      }
+
+      /* mobile — cards drop out of absolute positioning and stack below
+         the hero-frame as readable blocks (the 'floating decoration'
+         pattern doesn't fit at narrow widths) */
+      @media (max-width: 640px) {
+        .hero {
+          padding: 130px 18px 64px;
+        }
+        .hero-visual {
+          aspect-ratio: auto;
+          max-width: 100%;
+        }
+        .hero-frame {
+          aspect-ratio: 4/5;
+          height: auto;
+          max-width: 360px;
+          margin: 0 auto;
+        }
+        .ki-card,
+        .ki-quote {
+          position: relative;
+          inset: auto;
+          left: auto;
+          right: auto;
+          top: auto;
+          bottom: auto;
+          display: block;
+          max-width: 100%;
+          margin: 14px auto 0;
+        }
+        .ki-quote {
+          /* mirror the speech-bubble corner now that it sits below */
+          border-radius: 14px 14px 4px 14px;
         }
       }
 
