@@ -1061,9 +1061,13 @@
         height: 100%;
       }
       .map .pin {
+        /* SVG building label "사이間" sits at viewBox (335..380, 208..222) =
+           ~(60%, 47%). Center the pin on that point via transform so the
+           pin's center (not its top-left corner) is what 60%/47% targets. */
         position: absolute;
-        left: 54%;
-        top: 46%;
+        left: 60%;
+        top: 47%;
+        transform: translate(-50%, -50%);
         width: 18px;
         height: 18px;
         border-radius: 50%;
