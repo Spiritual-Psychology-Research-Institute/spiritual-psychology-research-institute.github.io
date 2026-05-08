@@ -1,0 +1,1864 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>사이間 영성심리 연구소</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f1ece0;
+        --bg-deep: #e6dfcc;
+        --paper: #f8f4e8;
+        --ink: #3a3a2a;
+        --ink-soft: #525a44;
+        --muted: #8a8a72;
+        --line: #cfc6ad;
+        --moss: #7a8163; /* soft khaki */
+        --moss-deep: #5e6448; /* deeper khaki, not too dark */
+        --moss-mid: #9aa085; /* light khaki */
+        --terra: #b08a5e; /* warm tan accent, harmonizes w/ khaki */
+        --gold: #b39866;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Noto Sans KR", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-weight: 300;
+        line-height: 1.7;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      img {
+        display: block;
+        max-width: 100%;
+      }
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: 0;
+        background: none;
+        color: inherit;
+      }
+      .serif {
+        font-family: "Noto Serif KR", serif;
+      }
+      .latin {
+        font-family: "Cormorant Garamond", serif;
+      }
+
+      /* ——— grain + subtle texture ——— */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.35;
+        mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.13 0 0 0 0 0.16 0 0 0 0 0.14 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+      }
+
+      /* ——— navigation ——— */
+      .nav {
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 22px 44px;
+        transition:
+          background 0.35s ease,
+          backdrop-filter 0.35s ease,
+          border-color 0.35s ease;
+        border-bottom: 1px solid transparent;
+      }
+      .nav.scrolled {
+        background: rgba(244, 239, 230, 0.82);
+        backdrop-filter: blur(14px) saturate(1.05);
+        border-bottom-color: rgba(201, 192, 173, 0.5);
+      }
+      .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .brand .mark {
+        font-family: "Noto Serif KR", serif;
+        font-weight: 500;
+        font-size: 20px;
+        letter-spacing: 0.04em;
+        color: var(--moss-deep);
+      }
+      .brand .mark .han {
+        color: var(--terra);
+        font-weight: 400;
+        margin-left: 1px;
+      }
+      .brand .sub {
+        font-size: 11px;
+        letter-spacing: 0.32em;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .nav ul {
+        display: flex;
+        gap: 34px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+      }
+      .nav ul a {
+        color: var(--ink-soft);
+        position: relative;
+        padding: 6px 0;
+      }
+      .nav ul a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -2px;
+        height: 1px;
+        background: var(--moss);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.35s ease;
+      }
+      .nav ul a:hover::after,
+      .nav ul a.active::after {
+        transform: scaleX(1);
+      }
+      .nav .cta {
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        border: 1px solid var(--moss);
+        color: var(--moss-deep);
+        padding: 10px 18px;
+        border-radius: 999px;
+        transition: all 0.25s ease;
+      }
+      .nav .cta:hover {
+        background: var(--moss-deep);
+        color: #f4efe6;
+      }
+
+      /* ——— hero ——— */
+      .hero {
+        position: relative;
+        min-height: 100vh;
+        padding: 160px 44px 80px;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 64px;
+        align-items: center;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: auto -10% -30% -10%;
+        height: 80%;
+        background:
+          radial-gradient(
+            60% 60% at 30% 50%,
+            rgba(58, 90, 68, 0.15),
+            transparent 70%
+          ),
+          radial-gradient(
+            40% 50% at 80% 30%,
+            rgba(168, 138, 74, 0.12),
+            transparent 70%
+          );
+        pointer-events: none;
+        z-index: 0;
+      }
+      .hero-copy {
+        position: relative;
+        z-index: 2;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 11px;
+        letter-spacing: 0.42em;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 32px;
+      }
+      .eyebrow::before {
+        content: "";
+        width: 36px;
+        height: 1px;
+        background: var(--moss-mid);
+      }
+      h1.hero-title {
+        font-family: "Noto Serif KR", serif;
+        font-weight: 300;
+        font-size: clamp(40px, 5.4vw, 76px);
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+        color: var(--moss-deep);
+        margin: 0 0 28px;
+      }
+      h1.hero-title .em {
+        font-style: italic;
+        font-family: "Cormorant Garamond", serif;
+        color: var(--terra);
+        font-weight: 400;
+      }
+      h1.hero-title .between {
+        display: inline-block;
+        position: relative;
+        padding: 0 0.12em;
+      }
+      h1.hero-title .between::before,
+      h1.hero-title .between::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 0.55em;
+        height: 1px;
+        background: var(--moss-mid);
+      }
+      h1.hero-title .between::before {
+        right: 100%;
+      }
+      h1.hero-title .between::after {
+        left: 100%;
+      }
+      .lead {
+        max-width: 480px;
+        font-size: 16px;
+        color: var(--ink-soft);
+        line-height: 1.95;
+      }
+      .lead em {
+        font-style: normal;
+        color: var(--moss-deep);
+        font-weight: 500;
+      }
+      .hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-top: 44px;
+      }
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 30px;
+        background: var(--moss-deep);
+        color: #f4efe6;
+        font-size: 14px;
+        letter-spacing: 0.16em;
+        border-radius: 999px;
+        transition:
+          transform 0.3s ease,
+          background 0.3s ease;
+      }
+      .btn-primary:hover {
+        background: var(--moss);
+        transform: translateY(-1px);
+      }
+      .btn-primary .arrow {
+        display: inline-block;
+        width: 22px;
+        height: 1px;
+        background: currentColor;
+        position: relative;
+      }
+      .btn-primary .arrow::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: -3px;
+        width: 7px;
+        height: 7px;
+        border-top: 1px solid currentColor;
+        border-right: 1px solid currentColor;
+        transform: rotate(45deg);
+      }
+      .btn-ghost {
+        font-size: 13px;
+        letter-spacing: 0.22em;
+        color: var(--ink-soft);
+        border-bottom: 1px solid var(--moss-mid);
+        padding-bottom: 6px;
+        transition:
+          color 0.25s ease,
+          border-color 0.25s ease;
+      }
+      .btn-ghost:hover {
+        color: var(--moss-deep);
+        border-color: var(--moss-deep);
+      }
+
+      /* ——— hero visual ——— */
+      .hero-visual {
+        position: relative;
+        z-index: 2;
+        aspect-ratio: 4/5;
+        width: 100%;
+        max-width: 520px;
+        justify-self: end;
+      }
+      .hero-frame {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 999px 999px 32px 32px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #3a5a44, #26402f 60%, #1a2c22);
+        box-shadow:
+          0 30px 70px -30px rgba(38, 64, 47, 0.55),
+          0 1px 0 rgba(255, 255, 255, 0.4) inset;
+      }
+      .hero-frame::before {
+        /* layered tree silhouettes */
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            120% 60% at 50% 100%,
+            rgba(20, 40, 28, 0.85),
+            transparent 60%
+          ),
+          radial-gradient(
+            80% 40% at 50% 0%,
+            rgba(243, 224, 179, 0.18),
+            transparent 70%
+          ),
+          repeating-linear-gradient(
+            86deg,
+            rgba(20, 40, 28, 0) 0 22px,
+            rgba(20, 40, 28, 0.18) 22px 24px
+          ),
+          linear-gradient(
+            180deg,
+            rgba(116, 150, 118, 0.45),
+            rgba(38, 64, 47, 0) 40%
+          );
+      }
+      .hero-frame .sun {
+        position: absolute;
+        left: 50%;
+        top: 24%;
+        transform: translate(-50%, -50%);
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 50% 50%,
+          #f4dfa6 0%,
+          #e6c478 40%,
+          transparent 70%
+        );
+        filter: blur(2px);
+        opacity: 0.85;
+      }
+      .hero-frame .trees {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 62%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        padding: 0 6%;
+      }
+      .hero-frame .tree {
+        width: 14px;
+        background: linear-gradient(180deg, #0d1f15, #06120b);
+        border-radius: 8px 8px 0 0;
+        opacity: 0.92;
+        transform-origin: bottom;
+      }
+      .hero-frame .tree::before {
+        content: "";
+        display: block;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #0d1f15;
+        margin: -18px 0 0 -10px;
+      }
+      .hero-frame .path {
+        position: absolute;
+        left: 50%;
+        bottom: -4%;
+        width: 46%;
+        height: 42%;
+        transform: translateX(-50%);
+        background: radial-gradient(
+          60% 100% at 50% 100%,
+          rgba(244, 223, 180, 0.55),
+          rgba(244, 223, 180, 0) 70%
+        );
+        clip-path: polygon(40% 0, 60% 0, 90% 100%, 10% 100%);
+        filter: blur(1px);
+      }
+      .hero-frame .placeholder {
+        position: absolute;
+        inset: auto 0 18px 0;
+        text-align: center;
+        color: rgba(244, 239, 230, 0.55);
+        font-family: "JetBrains Mono", "Courier New", monospace;
+        font-size: 10px;
+        letter-spacing: 0.3em;
+      }
+      .hero-frame .vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          80% 60% at 50% 60%,
+          transparent 30%,
+          rgba(0, 0, 0, 0.35) 100%
+        );
+        pointer-events: none;
+      }
+
+      /* floating card */
+      .ki-card {
+        position: absolute;
+        left: -60px;
+        top: 38%;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        padding: 18px 22px;
+        border-radius: 14px;
+        box-shadow: 0 16px 40px -20px rgba(31, 42, 35, 0.35);
+        max-width: 230px;
+        backdrop-filter: blur(2px);
+      }
+      .ki-card .glyph {
+        font-family: "Noto Serif KR", serif;
+        font-size: 36px;
+        color: var(--terra);
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .ki-card .label {
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .ki-card .body {
+        font-size: 13px;
+        color: var(--ink-soft);
+        line-height: 1.7;
+      }
+
+      .ki-quote {
+        position: absolute;
+        right: -28px;
+        bottom: 6%;
+        background: rgba(38, 64, 47, 0.92);
+        color: #f4efe6;
+        padding: 16px 22px;
+        border-radius: 14px 14px 14px 4px;
+        max-width: 260px;
+        font-size: 13px;
+        line-height: 1.75;
+        font-family: "Noto Serif KR", serif;
+        font-weight: 300;
+      }
+      .ki-quote .who {
+        display: block;
+        margin-top: 10px;
+        font-size: 11px;
+        letter-spacing: 0.28em;
+        color: rgba(244, 239, 230, 0.7);
+        text-transform: uppercase;
+      }
+
+      /* ticker */
+      .ticker {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-top: 1px solid var(--line);
+        background: rgba(244, 239, 230, 0.65);
+        overflow: hidden;
+        z-index: 3;
+      }
+      .ticker-track {
+        display: flex;
+        gap: 60px;
+        padding: 14px 0;
+        white-space: nowrap;
+        animation: scroll 40s linear infinite;
+        font-size: 12px;
+        letter-spacing: 0.32em;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .ticker-track span {
+        display: inline-flex;
+        align-items: center;
+        gap: 60px;
+      }
+      .ticker-track .dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--terra);
+        display: inline-block;
+      }
+      @keyframes scroll {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ——— sections ——— */
+      section {
+        padding: 140px 44px;
+        position: relative;
+      }
+      .section-head {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 48px;
+        align-items: start;
+        margin-bottom: 80px;
+        max-width: 1240px;
+        margin-inline: auto;
+      }
+      .section-num {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: var(--terra);
+        font-size: 18px;
+        letter-spacing: 0.1em;
+      }
+      .section-num .line {
+        display: inline-block;
+        width: 60px;
+        height: 1px;
+        background: var(--terra);
+        vertical-align: middle;
+        margin-right: 14px;
+        transform: translateY(-3px);
+      }
+      .section-title {
+        font-family: "Noto Serif KR", serif;
+        font-weight: 300;
+        font-size: clamp(34px, 4vw, 54px);
+        line-height: 1.25;
+        color: var(--moss-deep);
+        margin: 0;
+        letter-spacing: -0.005em;
+      }
+      .section-title .accent {
+        color: var(--terra);
+        font-style: italic;
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 400;
+      }
+
+      /* ——— about ——— */
+      .about {
+        background: var(--paper);
+      }
+      .about-grid {
+        max-width: 1240px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .about-portrait {
+        position: sticky;
+        top: 120px;
+      }
+      .portrait-frame {
+        aspect-ratio: 3/4;
+        background: linear-gradient(160deg, #d9cfb7, #bfb097);
+        border-radius: 8px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 30px 60px -30px rgba(31, 42, 35, 0.35);
+      }
+      .portrait-frame::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          repeating-linear-gradient(
+            45deg,
+            rgba(38, 64, 47, 0.05) 0 12px,
+            rgba(38, 64, 47, 0) 12px 24px
+          ),
+          radial-gradient(
+            60% 50% at 50% 35%,
+            rgba(58, 90, 68, 0.4),
+            transparent 65%
+          );
+      }
+      .portrait-frame .name-plate {
+        position: absolute;
+        left: 24px;
+        bottom: 24px;
+        background: var(--paper);
+        padding: 14px 18px;
+        border-left: 2px solid var(--terra);
+      }
+      .portrait-frame .name-plate .ko {
+        font-family: "Noto Serif KR", serif;
+        font-size: 18px;
+        color: var(--moss-deep);
+        font-weight: 500;
+      }
+      .portrait-frame .name-plate .role {
+        font-size: 11px;
+        letter-spacing: 0.28em;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      .portrait-frame .ph-tag {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        font-family: "JetBrains Mono", "Courier New", monospace;
+        font-size: 10px;
+        letter-spacing: 0.3em;
+        color: rgba(31, 42, 35, 0.5);
+        text-transform: uppercase;
+      }
+      .portrait-frame .signature {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 42px;
+        color: rgba(31, 42, 35, 0.25);
+        transform: rotate(-8deg);
+      }
+
+      .about-text {
+        font-size: 16px;
+        line-height: 1.95;
+        color: var(--ink-soft);
+      }
+      .about-text .greeting {
+        font-family: "Noto Serif KR", serif;
+        font-size: 24px;
+        color: var(--moss-deep);
+        font-weight: 400;
+        margin: 0 0 24px;
+        line-height: 1.5;
+      }
+      .about-text p {
+        margin: 0 0 22px;
+      }
+      .about-text .pull {
+        font-family: "Noto Serif KR", serif;
+        font-size: 22px;
+        color: var(--moss-deep);
+        font-weight: 400;
+        line-height: 1.6;
+        padding: 24px 0;
+        margin: 36px 0;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .credentials {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: var(--line);
+        margin-top: 48px;
+        border: 1px solid var(--line);
+      }
+      .cred {
+        background: var(--paper);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-height: 120px;
+        justify-content: space-between;
+      }
+      .cred .num {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 42px;
+        line-height: 1;
+        color: var(--terra);
+        font-weight: 400;
+      }
+      .cred .lab {
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .cred .deg {
+        font-family: "Noto Serif KR", serif;
+        font-size: 15px;
+        color: var(--moss-deep);
+        font-weight: 500;
+      }
+      .cred .deg span {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 300;
+        letter-spacing: 0.05em;
+        margin-top: 4px;
+      }
+
+      /* ——— services ——— */
+      .services {
+        background: var(--bg);
+      }
+      .svc-grid {
+        max-width: 1240px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+      }
+      .svc {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 48px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        transition:
+          transform 0.4s ease,
+          box-shadow 0.4s ease;
+        cursor: pointer;
+      }
+      .svc:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 30px 60px -30px rgba(31, 42, 35, 0.25);
+      }
+      .svc-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--line);
+      }
+      .svc-no {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: var(--muted);
+        font-size: 14px;
+        letter-spacing: 0.1em;
+      }
+      .svc-glyph {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--bg-deep);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Noto Serif KR", serif;
+        font-size: 24px;
+        color: var(--moss-deep);
+      }
+      .svc-title {
+        font-family: "Noto Serif KR", serif;
+        font-size: 30px;
+        font-weight: 400;
+        color: var(--moss-deep);
+        line-height: 1.3;
+        margin: 0;
+      }
+      .svc-meta {
+        display: flex;
+        gap: 24px;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .svc-meta span {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .svc-meta .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--terra);
+      }
+      .svc-body {
+        font-size: 15px;
+        color: var(--ink-soft);
+        line-height: 1.85;
+      }
+      .svc-list {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+        color: var(--ink-soft);
+      }
+      .svc-list li {
+        display: flex;
+        gap: 14px;
+        align-items: baseline;
+      }
+      .svc-list li::before {
+        content: "—";
+        color: var(--terra);
+        flex-shrink: 0;
+      }
+      .svc-foot {
+        margin-top: auto;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+      }
+      .svc-foot .price {
+        font-family: "Noto Serif KR", serif;
+        letter-spacing: 0.04em;
+        font-size: 15px;
+        color: var(--moss-deep);
+      }
+      .svc-foot .arrow {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: var(--terra);
+      }
+
+      /* approach band */
+      .approach {
+        max-width: 1240px;
+        margin: 96px auto 0;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+      }
+      .step {
+        background: var(--paper);
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .step .n {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: var(--terra);
+        font-size: 16px;
+        letter-spacing: 0.08em;
+      }
+      .step .t {
+        font-family: "Noto Serif KR", serif;
+        font-size: 18px;
+        color: var(--moss-deep);
+        font-weight: 500;
+      }
+      .step .d {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      /* ——— location ——— */
+      .location {
+        background: var(--moss-deep);
+        color: #f4efe6;
+        position: relative;
+        overflow: hidden;
+      }
+      .location::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          70% 40% at 80% 20%,
+          rgba(168, 138, 74, 0.18),
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+      .location .section-num {
+        color: #d6b577;
+      }
+      .location .section-num .line {
+        background: #d6b577;
+      }
+      .location .section-title {
+        color: #f4efe6;
+      }
+      .location .section-title .accent {
+        color: #d6b577;
+      }
+      .loc-grid {
+        max-width: 1240px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 64px;
+        align-items: stretch;
+        position: relative;
+        z-index: 1;
+      }
+      .map {
+        position: relative;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #1a2c22;
+        border: 1px solid rgba(214, 181, 119, 0.25);
+        min-height: 460px;
+      }
+      .map svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .map .pin {
+        position: absolute;
+        left: 54%;
+        top: 46%;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--terra);
+        box-shadow:
+          0 0 0 8px rgba(163, 106, 74, 0.25),
+          0 0 0 16px rgba(163, 106, 74, 0.15);
+      }
+      .map .pin::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 1px solid rgba(163, 106, 74, 0.5);
+        transform: translate(-50%, -50%);
+        animation: pulse 2.4s ease-out infinite;
+      }
+      @keyframes pulse {
+        0% {
+          transform: translate(-50%, -50%) scale(0.4);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.6);
+          opacity: 0;
+        }
+      }
+      .map .legend {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        font-family: "JetBrains Mono", "Courier New", monospace;
+        font-size: 10px;
+        letter-spacing: 0.28em;
+        color: rgba(244, 239, 230, 0.6);
+        text-transform: uppercase;
+      }
+      .map .scale {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+        font-family: "JetBrains Mono", "Courier New", monospace;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: rgba(244, 239, 230, 0.55);
+      }
+      .map .scale .bar {
+        width: 60px;
+        height: 1px;
+        background: rgba(244, 239, 230, 0.5);
+        position: relative;
+      }
+      .map .scale .bar::before,
+      .map .scale .bar::after {
+        content: "";
+        position: absolute;
+        width: 1px;
+        height: 6px;
+        background: rgba(244, 239, 230, 0.5);
+        top: -3px;
+      }
+      .map .scale .bar::before {
+        left: 0;
+      }
+      .map .scale .bar::after {
+        right: 0;
+      }
+
+      .loc-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 32px;
+      }
+      .loc-row {
+        padding: 24px 0;
+        border-bottom: 1px solid rgba(244, 239, 230, 0.18);
+      }
+      .loc-row:first-child {
+        padding-top: 0;
+      }
+      .loc-row .lab {
+        font-size: 11px;
+        letter-spacing: 0.32em;
+        color: #d6b577;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .loc-row .val {
+        font-family: "Noto Serif KR", serif;
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 1.55;
+        color: #f4efe6;
+      }
+      .loc-row .val a {
+        color: inherit;
+        border-bottom: 1px solid rgba(244, 239, 230, 0.3);
+        transition: border-color 0.25s ease;
+      }
+      .loc-row .val a:hover {
+        border-color: #d6b577;
+      }
+      .loc-row .hint {
+        margin-top: 8px;
+        font-size: 13px;
+        color: rgba(244, 239, 230, 0.65);
+        letter-spacing: 0.04em;
+      }
+
+      /* ——— closing CTA ——— */
+      .closing {
+        background: var(--bg);
+        padding: 160px 44px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .closing::before {
+        content: "間";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-family: "Noto Serif KR", serif;
+        font-size: 520px;
+        color: var(--moss-deep);
+        opacity: 0.04;
+        font-weight: 300;
+        line-height: 1;
+        pointer-events: none;
+      }
+      .closing-inner {
+        position: relative;
+        max-width: 780px;
+        margin: 0 auto;
+      }
+      .closing h2 {
+        font-family: "Noto Serif KR", serif;
+        font-weight: 300;
+        font-size: clamp(36px, 4.5vw, 60px);
+        line-height: 1.3;
+        color: var(--moss-deep);
+        margin: 0 0 28px;
+        letter-spacing: -0.01em;
+      }
+      .closing h2 em {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: var(--terra);
+        font-weight: 400;
+      }
+      .closing p {
+        font-size: 16px;
+        color: var(--ink-soft);
+        margin: 0 0 44px;
+        line-height: 1.95;
+      }
+      .closing .btn-primary {
+        font-size: 14px;
+        padding: 20px 36px;
+      }
+
+      /* ——— footer ——— */
+      footer {
+        background: var(--moss-deep);
+        color: rgba(244, 239, 230, 0.85);
+        padding: 80px 44px 32px;
+      }
+      .foot-grid {
+        max-width: 1240px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr 1fr;
+        gap: 48px;
+        padding-bottom: 48px;
+        border-bottom: 1px solid rgba(244, 239, 230, 0.15);
+      }
+      .foot-brand .mark {
+        font-family: "Noto Serif KR", serif;
+        font-size: 24px;
+        color: #f4efe6;
+        font-weight: 500;
+      }
+      .foot-brand .mark .han {
+        color: #d6b577;
+        font-weight: 400;
+      }
+      .foot-brand .tag {
+        margin-top: 14px;
+        font-size: 13px;
+        line-height: 1.8;
+        color: rgba(244, 239, 230, 0.65);
+        max-width: 300px;
+      }
+      .foot-col h4 {
+        font-family: "Noto Serif KR", serif;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        color: #d6b577;
+        text-transform: uppercase;
+        margin: 0 0 18px;
+        font-weight: 500;
+      }
+      .foot-col ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-size: 13px;
+      }
+      .foot-col a:hover {
+        color: #f4efe6;
+      }
+      .foot-bottom {
+        max-width: 1240px;
+        margin: 24px auto 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        color: rgba(244, 239, 230, 0.5);
+        text-transform: uppercase;
+      }
+
+      /* responsive */
+      @media (max-width: 980px) {
+        .nav {
+          padding: 18px 22px;
+        }
+        .nav ul {
+          display: none;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+          padding: 140px 22px 80px;
+          gap: 48px;
+        }
+        .hero-visual {
+          justify-self: center;
+          max-width: 380px;
+        }
+        .ki-card {
+          left: -12px;
+        }
+        .ki-quote {
+          right: -12px;
+        }
+        section {
+          padding: 100px 22px;
+        }
+        .section-head {
+          grid-template-columns: 1fr;
+          gap: 20px;
+          margin-bottom: 48px;
+        }
+        .about-grid,
+        .svc-grid,
+        .loc-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .about-portrait {
+          position: static;
+        }
+        .approach {
+          grid-template-columns: 1fr 1fr;
+        }
+        .credentials {
+          grid-template-columns: 1fr;
+        }
+        .foot-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: 32px;
+        }
+        .foot-bottom {
+          flex-direction: column;
+          gap: 12px;
+          text-align: center;
+        }
+      }
+
+      /* fade-up reveal */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.9s ease,
+          transform 0.9s ease;
+      }
+      .reveal.in {
+        opacity: 1;
+        transform: none;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav" id="nav">
+      <a href="#top" class="brand">
+        <span class="mark"
+          >사이<span class="han">間</span> 영성심리 연구소</span
+        >
+      </a>
+      <ul>
+        <li><a href="#about" class="nav-link">소개</a></li>
+        <li><a href="#services" class="nav-link">상담 안내</a></li>
+        <li><a href="#location" class="nav-link">오시는 길</a></li>
+        <li><a href="#contact" class="nav-link">문의</a></li>
+      </ul>
+      <a class="cta" href="#contact">상담 신청</a>
+    </nav>
+
+    <!-- ——— HERO ——— -->
+    <header id="top" class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">SAI–GAN · 사이間 · est.</div>
+        <h1 class="hero-title">
+          더 나은 나를 위하여<br />
+          나의 <em>내면의 지도</em>를<br />
+          <span class="between">사이間</span>에서 찾다.
+        </h1>
+        <p class="lead">
+          숲을 걷듯 편안한 공간에서, <em>당신의 이야기에 깊이 공감</em>하여
+          마음의 지도를 함께 그려갑니다. 만성적인 어려움 또는 그 누구와도 나누지
+          못한 마음의 고통을 천천히 덜어드립니다.
+        </p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#contact"
+            >따뜻한 상담 시작하기 <span class="arrow"></span
+          ></a>
+          <a class="btn-ghost" href="#about">김윤희 박사 소개</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-frame">
+          <div class="sun"></div>
+          <div class="trees" id="trees"></div>
+          <div class="path"></div>
+          <div class="vignette"></div>
+          <div class="placeholder">[ ph · 숲길 / forest path photograph ]</div>
+        </div>
+
+        <aside class="ki-card">
+          <div class="glyph">間</div>
+          <div class="label">Sai · 사이</div>
+          <div class="body">
+            사람과 사람 사이, 마음과 마음 사이.<br />그 고요한 틈에서 회복은
+            시작됩니다.
+          </div>
+        </aside>
+
+        <aside class="ki-quote">
+          “당신의 이야기에 깊이 머무르겠습니다.”
+          <span class="who">— 김윤희 박사</span>
+        </aside>
+      </div>
+
+      <div class="ticker">
+        <div class="ticker-track">
+          <span
+            >심리상담 20년 <i class="dot"></i> 영성치유 10년
+            <i class="dot"></i> 영성(심리)학 박사 <i class="dot"></i> 1:1 대면
+            <i class="dot"></i> 표준화된 심리검사 <i class="dot"></i> 부천
+            상동역 도보 1분 <i class="dot"></i
+          ></span>
+          <span
+            >심리상담 20년 <i class="dot"></i> 영성치유 10년
+            <i class="dot"></i> 영성(심리)학 박사 <i class="dot"></i> 1:1 대면
+            <i class="dot"></i> 표준화된 심리검사 <i class="dot"></i> 부천
+            상동역 도보 1분 <i class="dot"></i
+          ></span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ——— ABOUT ——— -->
+    <section id="about" class="about">
+      <div class="section-head">
+        <div class="section-num"><span class="line"></span>01 / 소개</div>
+        <h2 class="section-title">
+          숲을 걷듯, 당신의 이야기에<br /><span class="accent">깊이</span>
+          머무르는 시간.
+        </h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-portrait reveal">
+          <div class="portrait-frame">
+            <span class="ph-tag">[ portrait · 김윤희 박사 ]</span>
+            <span class="signature">Y. Kim</span>
+            <div class="name-plate">
+              <div class="ko">김윤희 박사</div>
+              <div class="role">Director · Ph.D.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-text reveal">
+          <p class="greeting">
+            안녕하세요.<br />영성(심리)학박사 김윤희입니다.
+          </p>
+          <p>
+            숲을 걷듯 편안한 공간에서 당신의 이야기에 깊이 공감하여 마음의
+            지도를 함께 찾습니다. 만성적인 어려움 또는 그 누구와도 나누지 못한
+            마음의 고통을 덜어드리고자 합니다.
+          </p>
+          <p class="pull">
+            “회복은 빠른 답이 아니라, 충분히 머무를 수 있는
+            <em style="color: var(--terra); font-style: normal">사이間</em>에서
+            자라납니다.”
+          </p>
+          <p>
+            오랜 임상의 시간과 영성치유의 깊이가 만나는 자리에서, 보이는 증상
+            너머의 당신을 함께 바라보겠습니다.
+          </p>
+
+          <div class="credentials">
+            <div class="cred">
+              <div>
+                <div class="num">20<span style="font-size: 18px">+</span></div>
+                <div class="lab">Years</div>
+              </div>
+              <div class="deg">
+                심리상담 경력<span>Clinical counseling</span>
+              </div>
+            </div>
+            <div class="cred">
+              <div>
+                <div class="num">10<span style="font-size: 18px">+</span></div>
+                <div class="lab">Years</div>
+              </div>
+              <div class="deg">영성치유 경력<span>Spiritual healing</span></div>
+            </div>
+            <div class="cred">
+              <div>
+                <div class="num latin">B.A.</div>
+                <div class="lab">Degree</div>
+              </div>
+              <div class="deg">
+                심리학 학사<span>Bachelor in Psychology</span>
+              </div>
+            </div>
+            <div class="cred">
+              <div>
+                <div class="num latin">M.A.</div>
+                <div class="lab">Degree</div>
+              </div>
+              <div class="deg">
+                상담심리학 석사<span>Counseling Psychology</span>
+              </div>
+            </div>
+            <div class="cred" style="grid-column: 1/-1">
+              <div>
+                <div class="num latin">Ph.D.</div>
+                <div class="lab">Degree · 박사</div>
+              </div>
+              <div class="deg">
+                영성(심리)학 박사<span>Doctor of Spiritual Psychology</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ——— SERVICES ——— -->
+    <section id="services" class="services">
+      <div class="section-head">
+        <div class="section-num"><span class="line"></span>02 / 상담 안내</div>
+        <h2 class="section-title">
+          두 가지 결의 만남,<br />당신께 맞는
+          <span class="accent">속도</span>로.
+        </h2>
+      </div>
+
+      <div class="svc-grid">
+        <article class="svc reveal" tabindex="0">
+          <div class="svc-head">
+            <div>
+              <div class="svc-no">— No. 01</div>
+              <h3 class="svc-title">개인 상담</h3>
+            </div>
+            <div class="svc-glyph">心</div>
+          </div>
+          <div class="svc-meta">
+            <span><i class="dot"></i>50분 세션</span>
+            <span><i class="dot"></i>1:1 대면</span>
+          </div>
+          <p class="svc-body">
+            깊은 마음의 고통을 1:1 대면으로 천천히 풀어내는 시간입니다. 말로
+            옮기기 어려운 감각과 기억까지, 안전한 사이에서 함께 머무릅니다.
+          </p>
+          <ul class="svc-list">
+            <li>만성적 우울, 불안, 번아웃</li>
+            <li>관계의 반복되는 어려움</li>
+            <li>상실 · 트라우마 회복 작업</li>
+            <li>영성·실존적 질문에 머무르기</li>
+          </ul>
+          <div class="svc-foot">
+            <span class="price">형편에 따른 협의 결정</span>
+            <span class="arrow">read more →</span>
+          </div>
+        </article>
+
+        <article class="svc reveal" tabindex="0">
+          <div class="svc-head">
+            <div>
+              <div class="svc-no">— No. 02</div>
+              <h3 class="svc-title">심리 검사</h3>
+            </div>
+            <div class="svc-glyph">圖</div>
+          </div>
+          <div class="svc-meta">
+            <span><i class="dot"></i>표준화된 도구</span>
+            <span><i class="dot"></i>해석 면담 포함</span>
+          </div>
+          <p class="svc-body">
+            객관적인 자기이해를 위한 표준화된 심리검사와, 결과를 함께 읽어내는
+            해석 면담입니다. 숫자가 아닌 ‘당신의 결’을 봅니다.
+          </p>
+          <ul class="svc-list">
+            <li>성격 · 정서 · 대인관계 검사</li>
+            <li>스트레스 · 정신건강 평가</li>
+            <li>개인 맞춤형 결과 리포트</li>
+            <li>상담 방향 제안 포함</li>
+          </ul>
+          <div class="svc-foot">
+            <span class="price">협의하여 결정</span>
+            <span class="arrow">read more →</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="approach">
+        <div class="step reveal">
+          <span class="n">— i.</span><span class="t">문의하기</span
+          ><span class="d">전화 또는 이메일로 가벼운 인사부터 시작합니다.</span>
+        </div>
+        <div class="step reveal">
+          <span class="n">— ii.</span><span class="t">예약 · 안내</span
+          ><span class="d"
+            >시간과 형편을 함께 협의하여 첫 만남을 정합니다.</span
+          >
+        </div>
+        <div class="step reveal">
+          <span class="n">— iii.</span><span class="t">첫 상담</span
+          ><span class="d">지금의 어려움과 바람을 천천히 들려주세요.</span>
+        </div>
+        <div class="step reveal">
+          <span class="n">— iv.</span><span class="t">함께 걷기</span
+          ><span class="d">당신의 속도에 맞춰 내면의 지도를 그려갑니다.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ——— LOCATION ——— -->
+    <section id="location" class="location">
+      <div class="section-head">
+        <div class="section-num"><span class="line"></span>03 / 오시는 길</div>
+        <h2 class="section-title">
+          상동역 7번 출구,<br /><span class="accent">10미터</span>의 가까움.
+        </h2>
+      </div>
+
+      <div class="loc-grid">
+        <div class="map reveal">
+          <svg viewBox="0 0 600 460" preserveAspectRatio="none">
+            <defs>
+              <pattern
+                id="grid"
+                width="40"
+                height="40"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M40 0H0V40"
+                  fill="none"
+                  stroke="rgba(214,181,119,.08)"
+                  stroke-width="1"
+                />
+              </pattern>
+            </defs>
+            <rect width="600" height="460" fill="url(#grid)" />
+            <!-- roads -->
+            <path
+              d="M-10 230 L610 230"
+              stroke="rgba(214,181,119,.5)"
+              stroke-width="14"
+              fill="none"
+              stroke-linecap="round"
+            />
+            <path
+              d="M320 -10 L320 470"
+              stroke="rgba(214,181,119,.35)"
+              stroke-width="10"
+              fill="none"
+            />
+            <path
+              d="M0 110 Q200 120 320 230"
+              stroke="rgba(214,181,119,.22)"
+              stroke-width="6"
+              fill="none"
+            />
+            <path
+              d="M600 350 Q420 340 320 230"
+              stroke="rgba(214,181,119,.22)"
+              stroke-width="6"
+              fill="none"
+            />
+            <!-- station marker -->
+            <circle
+              cx="300"
+              cy="230"
+              r="14"
+              fill="none"
+              stroke="#d6b577"
+              stroke-width="2"
+            />
+            <circle cx="300" cy="230" r="5" fill="#d6b577" />
+            <text
+              x="280"
+              y="218"
+              fill="rgba(244,239,230,.7)"
+              font-family="'JetBrains Mono',monospace"
+              font-size="10"
+              letter-spacing="2"
+            >
+              SANGDONG STN.
+            </text>
+            <text
+              x="280"
+              y="208"
+              fill="rgba(214,181,119,.85)"
+              font-family="'JetBrains Mono',monospace"
+              font-size="9"
+              letter-spacing="3"
+            >
+              EXIT 7 →
+            </text>
+            <!-- our building label -->
+            <text
+              x="335"
+              y="208"
+              fill="#f4efe6"
+              font-family="'Noto Serif KR',serif"
+              font-size="14"
+            >
+              사이間
+            </text>
+            <text
+              x="335"
+              y="222"
+              fill="rgba(244,239,230,.6)"
+              font-family="'JetBrains Mono',monospace"
+              font-size="9"
+              letter-spacing="2"
+            >
+              RESEARCH · 6F
+            </text>
+            <!-- distance dashes -->
+            <path
+              d="M308 226 Q320 220 326 218"
+              stroke="#a36a4a"
+              stroke-width="1.5"
+              stroke-dasharray="3 4"
+              fill="none"
+            />
+            <text
+              x="310"
+              y="245"
+              fill="#d6b577"
+              font-family="'JetBrains Mono',monospace"
+              font-size="9"
+              letter-spacing="2"
+            >
+              10 m
+            </text>
+            <!-- compass -->
+            <g
+              transform="translate(540,60)"
+              fill="rgba(244,239,230,.5)"
+              stroke="rgba(244,239,230,.5)"
+              stroke-width="1"
+            >
+              <circle cx="0" cy="0" r="22" fill="none" />
+              <path
+                d="M0 -18 L4 0 L0 18 L-4 0 Z"
+                fill="rgba(244,239,230,.4)"
+                stroke="none"
+              />
+              <text
+                x="-4"
+                y="-26"
+                font-family="'JetBrains Mono',monospace"
+                font-size="9"
+                stroke="none"
+                fill="rgba(244,239,230,.7)"
+              >
+                N
+              </text>
+            </g>
+          </svg>
+          <div class="pin"></div>
+          <div class="legend">[ map · 부천 송내대로 ]</div>
+          <div class="scale">
+            <div class="bar"></div>
+            <div>0 ─ 10 m</div>
+          </div>
+        </div>
+
+        <div class="loc-info reveal">
+          <div class="loc-row">
+            <div class="lab">Address · 주소</div>
+            <div class="val">부천시 송내대로 265-85<br />6층</div>
+            <div class="hint">사이間 영성심리 연구소</div>
+          </div>
+          <div class="loc-row">
+            <div class="lab">Transit · 대중교통</div>
+            <div class="val">상동역 7번 출구 10m</div>
+            <div class="hint">
+              7호선 · 도보 1분 이내, 곧장 보이는 건물 6층입니다.
+            </div>
+          </div>
+          <div class="loc-row">
+            <div class="lab">Hours · 운영</div>
+            <div class="val">예약제 운영</div>
+            <div class="hint">평일 · 주말 협의 가능. 미리 연락해 주세요.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ——— CLOSING / CONTACT ——— -->
+    <section id="contact" class="closing">
+      <div class="closing-inner">
+        <div
+          class="eyebrow"
+          style="justify-content: center; display: inline-flex"
+        >
+          CONTACT · 문의
+        </div>
+        <h2>
+          당신의 이야기를 들려주세요.<br /><em>따뜻한 상담</em>, 가볍게
+          시작합니다.
+        </h2>
+        <p>
+          전화 또는 이메일로 편하게 연락 주세요. 말로 옮기기 어려우시다면<br />한두
+          문장만 보내주셔도 괜찮습니다. 제가 먼저 다정히 답하겠습니다.
+        </p>
+        <div
+          style="
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+          "
+        >
+          <a class="btn-primary" href="tel:01086601395"
+            >010 · 8660 · 1395 <span class="arrow"></span
+          ></a>
+          <a class="btn-ghost" href="mailto:uninet1355057@hanmail.net"
+            >uninet1355057@hanmail.net</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <div class="mark">
+            사이<span class="han">間</span> 영성심리 연구소
+          </div>
+          <div class="tag">
+            숲을 걷듯 편안한 공간에서, 당신의 이야기에 깊이 머무릅니다. 더 나은
+            나를 위하여, 나의 내면의 지도를 함께 찾아갑니다.
+          </div>
+        </div>
+        <div class="foot-col">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="#about">소개</a></li>
+            <li><a href="#services">상담 안내</a></li>
+            <li><a href="#location">오시는 길</a></li>
+            <li><a href="#contact">문의</a></li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h4>Contact</h4>
+          <ul>
+            <li>010 · 8660 · 1395</li>
+            <li>
+              <a href="mailto:uninet1355057@hanmail.net"
+                >uninet1355057@<br />hanmail.net</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h4>Visit</h4>
+          <ul>
+            <li>부천시 송내대로 265-85, 6층</li>
+            <li>상동역 7번 출구 10m</li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 사이間 영성심리 연구소 · All rights reserved.</span>
+        <span>Director · 김윤희 Ph.D.</span>
+      </div>
+    </footer>
+
+    <script>
+      // nav scroll state
+      const nav = document.getElementById("nav");
+      const onScroll = () =>
+        nav.classList.toggle("scrolled", window.scrollY > 30);
+      document.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      // smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener("click", (e) => {
+          const id = a.getAttribute("href");
+          if (id.length < 2) return;
+          const t = document.querySelector(id);
+          if (!t) return;
+          e.preventDefault();
+          window.scrollTo({
+            top: t.getBoundingClientRect().top + window.scrollY - 60,
+            behavior: "smooth",
+          });
+        });
+      });
+
+      // tree silhouettes (procedural to avoid SVG art)
+      const trees = document.getElementById("trees");
+      if (trees) {
+        const heights = [62, 88, 70, 102, 78, 96, 66, 90, 74, 84];
+        heights.forEach((h, i) => {
+          const t = document.createElement("div");
+          t.className = "tree";
+          t.style.height = h + "%";
+          t.style.opacity = 0.55 + (i % 3) * 0.15;
+          t.style.transform = `translateY(${(i % 2) * 4}px)`;
+          trees.appendChild(t);
+        });
+      }
+
+      // reveal on scroll
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((en) => {
+            if (en.isIntersecting) {
+              en.target.classList.add("in");
+              io.unobserve(en.target);
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+      // active nav link by section
+      const sections = ["about", "services", "location", "contact"].map((id) =>
+        document.getElementById(id),
+      );
+      const links = [...document.querySelectorAll(".nav-link")];
+      const spy = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((en) => {
+            if (en.isIntersecting) {
+              links.forEach((l) =>
+                l.classList.toggle(
+                  "active",
+                  l.getAttribute("href") === "#" + en.target.id,
+                ),
+              );
+            }
+          });
+        },
+        { rootMargin: "-40% 0px -55% 0px" },
+      );
+      sections.forEach((s) => s && spy.observe(s));
+    </script>
+  </body>
+</html>
