@@ -118,7 +118,7 @@
         --paper: #f8f4e8;
         --ink: #3a3a2a;
         --ink-soft: #525a44;
-        --muted: #8a8a72;
+        --muted: #62624e; /* darkened from #8a8a72 to pass WCAG AA on bg/paper */
         --line: #cfc6ad;
         --moss: #7a8163; /* soft khaki */
         --moss-deep: #5e6448; /* deeper khaki, not too dark */
@@ -1371,7 +1371,7 @@
     </style>
   </head>
   <body>
-    <nav class="nav" id="nav">
+    <nav class="nav" id="nav" aria-label="주 메뉴">
       <a href="#top" class="brand">
         <span class="mark"
           >사이<span class="han">間</span> 영성심리 연구소</span
@@ -1450,398 +1450,417 @@
       </div>
     </header>
 
-    <!-- ——— ABOUT ——— -->
-    <section id="about" class="about">
-      <div class="section-head">
-        <div class="section-num"><span class="line"></span>01 / 소개</div>
-        <h2 class="section-title">
-          숲을 걷듯, 당신의 이야기에<br /><span class="accent">깊이</span>
-          머무르는 시간.
-        </h2>
-      </div>
+    <main>
+      <!-- ——— ABOUT ——— -->
+      <section id="about" class="about">
+        <div class="section-head">
+          <div class="section-num"><span class="line"></span>01 / 소개</div>
+          <h2 class="section-title">
+            숲을 걷듯, 당신의 이야기에<br /><span class="accent">깊이</span>
+            머무르는 시간.
+          </h2>
+        </div>
 
-      <div class="about-grid">
-        <div class="about-portrait reveal">
-          <div class="portrait-frame">
-            <span class="ph-tag">[ portrait · 김윤희 박사 ]</span>
-            <span class="signature">Y. Kim</span>
-            <div class="name-plate">
-              <div class="ko">김윤희 박사</div>
-              <div class="role">Director · Ph.D.</div>
+        <div class="about-grid">
+          <div class="about-portrait reveal">
+            <div class="portrait-frame">
+              <span class="ph-tag">[ portrait · 김윤희 박사 ]</span>
+              <span class="signature">Y. Kim</span>
+              <div class="name-plate">
+                <div class="ko">김윤희 박사</div>
+                <div class="role">Director · Ph.D.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-text reveal">
+            <p class="greeting">
+              안녕하세요.<br />영성(심리)학박사 김윤희입니다.
+            </p>
+            <p>
+              숲을 걷듯 편안한 공간에서 당신의 이야기에 깊이 공감하여 마음의
+              지도를 함께 찾습니다. 만성적인 어려움 또는 그 누구와도 나누지 못한
+              마음의 고통을 덜어드리고자 합니다.
+            </p>
+            <p class="pull">
+              “회복은 빠른 답이 아니라, 충분히 머무를 수 있는
+              <em style="color: var(--terra); font-style: normal">사이間</em
+              >에서 자라납니다.”
+            </p>
+            <p>
+              오랜 임상의 시간과 영성치유의 깊이가 만나는 자리에서, 보이는 증상
+              너머의 당신을 함께 바라보겠습니다.
+            </p>
+
+            <div class="credentials">
+              <div class="cred">
+                <div>
+                  <div class="num">
+                    20<span style="font-size: 18px">+</span>
+                  </div>
+                  <div class="lab">Years</div>
+                </div>
+                <div class="deg">
+                  심리상담 경력<span>Clinical counseling</span>
+                </div>
+              </div>
+              <div class="cred">
+                <div>
+                  <div class="num">
+                    10<span style="font-size: 18px">+</span>
+                  </div>
+                  <div class="lab">Years</div>
+                </div>
+                <div class="deg">
+                  영성치유 경력<span>Spiritual healing</span>
+                </div>
+              </div>
+              <div class="cred">
+                <div>
+                  <div class="num latin">B.A.</div>
+                  <div class="lab">Degree</div>
+                </div>
+                <div class="deg">
+                  심리학 학사<span>Bachelor in Psychology</span>
+                </div>
+              </div>
+              <div class="cred">
+                <div>
+                  <div class="num latin">M.A.</div>
+                  <div class="lab">Degree</div>
+                </div>
+                <div class="deg">
+                  상담심리학 석사<span>Counseling Psychology</span>
+                </div>
+              </div>
+              <div class="cred" style="grid-column: 1/-1">
+                <div>
+                  <div class="num latin">Ph.D.</div>
+                  <div class="lab">Degree · 박사</div>
+                </div>
+                <div class="deg">
+                  영성(심리)학 박사<span>Doctor of Spiritual Psychology</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="about-text reveal">
-          <p class="greeting">
-            안녕하세요.<br />영성(심리)학박사 김윤희입니다.
-          </p>
-          <p>
-            숲을 걷듯 편안한 공간에서 당신의 이야기에 깊이 공감하여 마음의
-            지도를 함께 찾습니다. 만성적인 어려움 또는 그 누구와도 나누지 못한
-            마음의 고통을 덜어드리고자 합니다.
-          </p>
-          <p class="pull">
-            “회복은 빠른 답이 아니라, 충분히 머무를 수 있는
-            <em style="color: var(--terra); font-style: normal">사이間</em>에서
-            자라납니다.”
-          </p>
-          <p>
-            오랜 임상의 시간과 영성치유의 깊이가 만나는 자리에서, 보이는 증상
-            너머의 당신을 함께 바라보겠습니다.
-          </p>
+      <!-- ——— SERVICES ——— -->
+      <section id="services" class="services">
+        <div class="section-head">
+          <div class="section-num">
+            <span class="line"></span>02 / 상담 안내
+          </div>
+          <h2 class="section-title">
+            두 가지 결의 만남,<br />당신께 맞는
+            <span class="accent">속도</span>로.
+          </h2>
+        </div>
 
-          <div class="credentials">
-            <div class="cred">
+        <div class="svc-grid">
+          <a class="svc reveal" href="#contact" aria-label="개인 상담 문의하기">
+            <div class="svc-head">
               <div>
-                <div class="num">20<span style="font-size: 18px">+</span></div>
-                <div class="lab">Years</div>
+                <div class="svc-no">— No. 01</div>
+                <h3 class="svc-title">개인 상담</h3>
               </div>
-              <div class="deg">
-                심리상담 경력<span>Clinical counseling</span>
-              </div>
+              <div class="svc-glyph">心</div>
             </div>
-            <div class="cred">
+            <div class="svc-meta">
+              <span><i class="dot"></i>50분 세션</span>
+              <span><i class="dot"></i>1:1 대면</span>
+            </div>
+            <p class="svc-body">
+              깊은 마음의 고통을 1:1 대면으로 천천히 풀어내는 시간입니다. 말로
+              옮기기 어려운 감각과 기억까지, 안전한 사이에서 함께 머무릅니다.
+            </p>
+            <ul class="svc-list">
+              <li>만성적 우울, 불안, 번아웃</li>
+              <li>관계의 반복되는 어려움</li>
+              <li>상실 · 트라우마 회복 작업</li>
+              <li>영성·실존적 질문에 머무르기</li>
+            </ul>
+            <div class="svc-foot">
+              <span class="price">형편에 따른 협의 결정</span>
+              <span class="arrow">상담 문의 →</span>
+            </div>
+          </a>
+
+          <a class="svc reveal" href="#contact" aria-label="심리 검사 문의하기">
+            <div class="svc-head">
               <div>
-                <div class="num">10<span style="font-size: 18px">+</span></div>
-                <div class="lab">Years</div>
+                <div class="svc-no">— No. 02</div>
+                <h3 class="svc-title">심리 검사</h3>
               </div>
-              <div class="deg">영성치유 경력<span>Spiritual healing</span></div>
+              <div class="svc-glyph">圖</div>
             </div>
-            <div class="cred">
-              <div>
-                <div class="num latin">B.A.</div>
-                <div class="lab">Degree</div>
-              </div>
-              <div class="deg">
-                심리학 학사<span>Bachelor in Psychology</span>
-              </div>
+            <div class="svc-meta">
+              <span><i class="dot"></i>표준화된 도구</span>
+              <span><i class="dot"></i>해석 면담 포함</span>
             </div>
-            <div class="cred">
-              <div>
-                <div class="num latin">M.A.</div>
-                <div class="lab">Degree</div>
-              </div>
-              <div class="deg">
-                상담심리학 석사<span>Counseling Psychology</span>
-              </div>
+            <p class="svc-body">
+              객관적인 자기이해를 위한 표준화된 심리검사와, 결과를 함께 읽어내는
+              해석 면담입니다. 숫자가 아닌 ‘당신의 결’을 봅니다.
+            </p>
+            <ul class="svc-list">
+              <li>성격 · 정서 · 대인관계 검사</li>
+              <li>스트레스 · 정신건강 평가</li>
+              <li>개인 맞춤형 결과 리포트</li>
+              <li>상담 방향 제안 포함</li>
+            </ul>
+            <div class="svc-foot">
+              <span class="price">협의하여 결정</span>
+              <span class="arrow">상담 문의 →</span>
             </div>
-            <div class="cred" style="grid-column: 1/-1">
-              <div>
-                <div class="num latin">Ph.D.</div>
-                <div class="lab">Degree · 박사</div>
-              </div>
-              <div class="deg">
-                영성(심리)학 박사<span>Doctor of Spiritual Psychology</span>
-              </div>
-            </div>
+          </a>
+        </div>
+
+        <div class="approach">
+          <div class="step reveal">
+            <span class="n">— i.</span><span class="t">문의하기</span
+            ><span class="d"
+              >전화 또는 이메일로 가벼운 인사부터 시작합니다.</span
+            >
+          </div>
+          <div class="step reveal">
+            <span class="n">— ii.</span><span class="t">예약 · 안내</span
+            ><span class="d"
+              >시간과 형편을 함께 협의하여 첫 만남을 정합니다.</span
+            >
+          </div>
+          <div class="step reveal">
+            <span class="n">— iii.</span><span class="t">첫 상담</span
+            ><span class="d">지금의 어려움과 바람을 천천히 들려주세요.</span>
+          </div>
+          <div class="step reveal">
+            <span class="n">— iv.</span><span class="t">함께 걷기</span
+            ><span class="d">당신의 속도에 맞춰 내면의 지도를 그려갑니다.</span>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ——— SERVICES ——— -->
-    <section id="services" class="services">
-      <div class="section-head">
-        <div class="section-num"><span class="line"></span>02 / 상담 안내</div>
-        <h2 class="section-title">
-          두 가지 결의 만남,<br />당신께 맞는
-          <span class="accent">속도</span>로.
-        </h2>
-      </div>
-
-      <div class="svc-grid">
-        <a class="svc reveal" href="#contact" aria-label="개인 상담 문의하기">
-          <div class="svc-head">
-            <div>
-              <div class="svc-no">— No. 01</div>
-              <h3 class="svc-title">개인 상담</h3>
-            </div>
-            <div class="svc-glyph">心</div>
+      <!-- ——— LOCATION ——— -->
+      <section id="location" class="location">
+        <div class="section-head">
+          <div class="section-num">
+            <span class="line"></span>03 / 오시는 길
           </div>
-          <div class="svc-meta">
-            <span><i class="dot"></i>50분 세션</span>
-            <span><i class="dot"></i>1:1 대면</span>
-          </div>
-          <p class="svc-body">
-            깊은 마음의 고통을 1:1 대면으로 천천히 풀어내는 시간입니다. 말로
-            옮기기 어려운 감각과 기억까지, 안전한 사이에서 함께 머무릅니다.
-          </p>
-          <ul class="svc-list">
-            <li>만성적 우울, 불안, 번아웃</li>
-            <li>관계의 반복되는 어려움</li>
-            <li>상실 · 트라우마 회복 작업</li>
-            <li>영성·실존적 질문에 머무르기</li>
-          </ul>
-          <div class="svc-foot">
-            <span class="price">형편에 따른 협의 결정</span>
-            <span class="arrow">상담 문의 →</span>
-          </div>
-        </a>
-
-        <a class="svc reveal" href="#contact" aria-label="심리 검사 문의하기">
-          <div class="svc-head">
-            <div>
-              <div class="svc-no">— No. 02</div>
-              <h3 class="svc-title">심리 검사</h3>
-            </div>
-            <div class="svc-glyph">圖</div>
-          </div>
-          <div class="svc-meta">
-            <span><i class="dot"></i>표준화된 도구</span>
-            <span><i class="dot"></i>해석 면담 포함</span>
-          </div>
-          <p class="svc-body">
-            객관적인 자기이해를 위한 표준화된 심리검사와, 결과를 함께 읽어내는
-            해석 면담입니다. 숫자가 아닌 ‘당신의 결’을 봅니다.
-          </p>
-          <ul class="svc-list">
-            <li>성격 · 정서 · 대인관계 검사</li>
-            <li>스트레스 · 정신건강 평가</li>
-            <li>개인 맞춤형 결과 리포트</li>
-            <li>상담 방향 제안 포함</li>
-          </ul>
-          <div class="svc-foot">
-            <span class="price">협의하여 결정</span>
-            <span class="arrow">상담 문의 →</span>
-          </div>
-        </a>
-      </div>
-
-      <div class="approach">
-        <div class="step reveal">
-          <span class="n">— i.</span><span class="t">문의하기</span
-          ><span class="d">전화 또는 이메일로 가벼운 인사부터 시작합니다.</span>
+          <h2 class="section-title">
+            상동역 7번 출구,<br /><span class="accent">10미터</span>의 가까움.
+          </h2>
         </div>
-        <div class="step reveal">
-          <span class="n">— ii.</span><span class="t">예약 · 안내</span
-          ><span class="d"
-            >시간과 형편을 함께 협의하여 첫 만남을 정합니다.</span
-          >
-        </div>
-        <div class="step reveal">
-          <span class="n">— iii.</span><span class="t">첫 상담</span
-          ><span class="d">지금의 어려움과 바람을 천천히 들려주세요.</span>
-        </div>
-        <div class="step reveal">
-          <span class="n">— iv.</span><span class="t">함께 걷기</span
-          ><span class="d">당신의 속도에 맞춰 내면의 지도를 그려갑니다.</span>
-        </div>
-      </div>
-    </section>
 
-    <!-- ——— LOCATION ——— -->
-    <section id="location" class="location">
-      <div class="section-head">
-        <div class="section-num"><span class="line"></span>03 / 오시는 길</div>
-        <h2 class="section-title">
-          상동역 7번 출구,<br /><span class="accent">10미터</span>의 가까움.
-        </h2>
-      </div>
-
-      <div class="loc-grid">
-        <div class="map reveal">
-          <svg viewBox="0 0 600 460" preserveAspectRatio="none">
-            <defs>
-              <pattern
-                id="grid"
-                width="40"
-                height="40"
-                patternUnits="userSpaceOnUse"
-              >
-                <path
-                  d="M40 0H0V40"
-                  fill="none"
-                  stroke="rgba(214,181,119,.08)"
-                  stroke-width="1"
-                />
-              </pattern>
-            </defs>
-            <rect width="600" height="460" fill="url(#grid)" />
-            <!-- roads -->
-            <path
-              d="M-10 230 L610 230"
-              stroke="rgba(214,181,119,.5)"
-              stroke-width="14"
-              fill="none"
-              stroke-linecap="round"
-            />
-            <path
-              d="M320 -10 L320 470"
-              stroke="rgba(214,181,119,.35)"
-              stroke-width="10"
-              fill="none"
-            />
-            <path
-              d="M0 110 Q200 120 320 230"
-              stroke="rgba(214,181,119,.22)"
-              stroke-width="6"
-              fill="none"
-            />
-            <path
-              d="M600 350 Q420 340 320 230"
-              stroke="rgba(214,181,119,.22)"
-              stroke-width="6"
-              fill="none"
-            />
-            <!-- station marker -->
-            <circle
-              cx="300"
-              cy="230"
-              r="14"
-              fill="none"
-              stroke="#d6b577"
-              stroke-width="2"
-            />
-            <circle cx="300" cy="230" r="5" fill="#d6b577" />
-            <text
-              x="280"
-              y="218"
-              fill="rgba(244,239,230,.7)"
-              font-family="'JetBrains Mono',monospace"
-              font-size="10"
-              letter-spacing="2"
+        <div class="loc-grid">
+          <div class="map reveal">
+            <svg
+              viewBox="0 0 600 460"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              role="presentation"
             >
-              SANGDONG STN.
-            </text>
-            <text
-              x="280"
-              y="208"
-              fill="rgba(214,181,119,.85)"
-              font-family="'JetBrains Mono',monospace"
-              font-size="9"
-              letter-spacing="3"
-            >
-              EXIT 7 →
-            </text>
-            <!-- our building label -->
-            <text
-              x="335"
-              y="208"
-              fill="#f4efe6"
-              font-family="'Noto Serif KR',serif"
-              font-size="14"
-            >
-              사이間
-            </text>
-            <text
-              x="335"
-              y="222"
-              fill="rgba(244,239,230,.6)"
-              font-family="'JetBrains Mono',monospace"
-              font-size="9"
-              letter-spacing="2"
-            >
-              RESEARCH · 6F
-            </text>
-            <!-- distance dashes -->
-            <path
-              d="M308 226 Q320 220 326 218"
-              stroke="#a36a4a"
-              stroke-width="1.5"
-              stroke-dasharray="3 4"
-              fill="none"
-            />
-            <text
-              x="310"
-              y="245"
-              fill="#d6b577"
-              font-family="'JetBrains Mono',monospace"
-              font-size="9"
-              letter-spacing="2"
-            >
-              10 m
-            </text>
-            <!-- compass -->
-            <g
-              transform="translate(540,60)"
-              fill="rgba(244,239,230,.5)"
-              stroke="rgba(244,239,230,.5)"
-              stroke-width="1"
-            >
-              <circle cx="0" cy="0" r="22" fill="none" />
+              <defs>
+                <pattern
+                  id="grid"
+                  width="40"
+                  height="40"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M40 0H0V40"
+                    fill="none"
+                    stroke="rgba(214,181,119,.08)"
+                    stroke-width="1"
+                  />
+                </pattern>
+              </defs>
+              <rect width="600" height="460" fill="url(#grid)" />
+              <!-- roads -->
               <path
-                d="M0 -18 L4 0 L0 18 L-4 0 Z"
-                fill="rgba(244,239,230,.4)"
-                stroke="none"
+                d="M-10 230 L610 230"
+                stroke="rgba(214,181,119,.5)"
+                stroke-width="14"
+                fill="none"
+                stroke-linecap="round"
               />
+              <path
+                d="M320 -10 L320 470"
+                stroke="rgba(214,181,119,.35)"
+                stroke-width="10"
+                fill="none"
+              />
+              <path
+                d="M0 110 Q200 120 320 230"
+                stroke="rgba(214,181,119,.22)"
+                stroke-width="6"
+                fill="none"
+              />
+              <path
+                d="M600 350 Q420 340 320 230"
+                stroke="rgba(214,181,119,.22)"
+                stroke-width="6"
+                fill="none"
+              />
+              <!-- station marker -->
+              <circle
+                cx="300"
+                cy="230"
+                r="14"
+                fill="none"
+                stroke="#d6b577"
+                stroke-width="2"
+              />
+              <circle cx="300" cy="230" r="5" fill="#d6b577" />
               <text
-                x="-4"
-                y="-26"
+                x="280"
+                y="218"
+                fill="rgba(244,239,230,.7)"
+                font-family="'JetBrains Mono',monospace"
+                font-size="10"
+                letter-spacing="2"
+              >
+                SANGDONG STN.
+              </text>
+              <text
+                x="280"
+                y="208"
+                fill="rgba(214,181,119,.85)"
                 font-family="'JetBrains Mono',monospace"
                 font-size="9"
-                stroke="none"
-                fill="rgba(244,239,230,.7)"
+                letter-spacing="3"
               >
-                N
+                EXIT 7 →
               </text>
-            </g>
-          </svg>
-          <div class="pin"></div>
-          <div class="legend">[ map · 부천 송내대로 ]</div>
-          <div class="scale">
-            <div class="bar"></div>
-            <div>0 ─ 10 m</div>
-          </div>
-        </div>
-
-        <div class="loc-info reveal">
-          <div class="loc-row">
-            <div class="lab">Address · 주소</div>
-            <div class="val">부천시 송내대로 265-85<br />6층</div>
-            <div class="hint">사이間 영성심리 연구소</div>
-          </div>
-          <div class="loc-row">
-            <div class="lab">Transit · 대중교통</div>
-            <div class="val">상동역 7번 출구 10m</div>
-            <div class="hint">
-              7호선 · 도보 1분 이내, 곧장 보이는 건물 6층입니다.
+              <!-- our building label -->
+              <text
+                x="335"
+                y="208"
+                fill="#f4efe6"
+                font-family="'Noto Serif KR',serif"
+                font-size="14"
+              >
+                사이間
+              </text>
+              <text
+                x="335"
+                y="222"
+                fill="rgba(244,239,230,.6)"
+                font-family="'JetBrains Mono',monospace"
+                font-size="9"
+                letter-spacing="2"
+              >
+                RESEARCH · 6F
+              </text>
+              <!-- distance dashes -->
+              <path
+                d="M308 226 Q320 220 326 218"
+                stroke="#a36a4a"
+                stroke-width="1.5"
+                stroke-dasharray="3 4"
+                fill="none"
+              />
+              <text
+                x="310"
+                y="245"
+                fill="#d6b577"
+                font-family="'JetBrains Mono',monospace"
+                font-size="9"
+                letter-spacing="2"
+              >
+                10 m
+              </text>
+              <!-- compass -->
+              <g
+                transform="translate(540,60)"
+                fill="rgba(244,239,230,.5)"
+                stroke="rgba(244,239,230,.5)"
+                stroke-width="1"
+              >
+                <circle cx="0" cy="0" r="22" fill="none" />
+                <path
+                  d="M0 -18 L4 0 L0 18 L-4 0 Z"
+                  fill="rgba(244,239,230,.4)"
+                  stroke="none"
+                />
+                <text
+                  x="-4"
+                  y="-26"
+                  font-family="'JetBrains Mono',monospace"
+                  font-size="9"
+                  stroke="none"
+                  fill="rgba(244,239,230,.7)"
+                >
+                  N
+                </text>
+              </g>
+            </svg>
+            <div class="pin"></div>
+            <div class="legend">[ map · 부천 송내대로 ]</div>
+            <div class="scale">
+              <div class="bar"></div>
+              <div>0 ─ 10 m</div>
             </div>
           </div>
-          <div class="loc-row">
-            <div class="lab">Hours · 운영</div>
-            <div class="val">예약제 운영</div>
-            <div class="hint">평일 · 주말 협의 가능. 미리 연락해 주세요.</div>
+
+          <div class="loc-info reveal">
+            <div class="loc-row">
+              <div class="lab">Address · 주소</div>
+              <div class="val">부천시 송내대로 265-85<br />6층</div>
+              <div class="hint">사이間 영성심리 연구소</div>
+            </div>
+            <div class="loc-row">
+              <div class="lab">Transit · 대중교통</div>
+              <div class="val">상동역 7번 출구 10m</div>
+              <div class="hint">
+                7호선 · 도보 1분 이내, 곧장 보이는 건물 6층입니다.
+              </div>
+            </div>
+            <div class="loc-row">
+              <div class="lab">Hours · 운영</div>
+              <div class="val">예약제 운영</div>
+              <div class="hint">평일 · 주말 협의 가능. 미리 연락해 주세요.</div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ——— CLOSING / CONTACT ——— -->
-    <section id="contact" class="closing">
-      <div class="closing-inner">
-        <div
-          class="eyebrow"
-          style="justify-content: center; display: inline-flex"
-        >
-          CONTACT · 문의
-        </div>
-        <h2>
-          당신의 이야기를 들려주세요.<br /><em>따뜻한 상담</em>, 가볍게
-          시작합니다.
-        </h2>
-        <p>
-          전화 또는 이메일로 편하게 연락 주세요. 말로 옮기기 어려우시다면<br />한두
-          문장만 보내주셔도 괜찮습니다. 제가 먼저 다정히 답하겠습니다.
-        </p>
-        <div
-          style="
-            display: flex;
-            gap: 14px;
-            justify-content: center;
-            flex-wrap: wrap;
-            align-items: center;
-          "
-        >
-          <a class="btn-primary" href="tel:01086601395"
-            >010 · 8660 · 1395 <span class="arrow"></span
-          ></a>
-          <a class="btn-ghost" href="mailto:uninet1355057@hanmail.net"
-            >uninet1355057@hanmail.net</a
+      <!-- ——— CLOSING / CONTACT ——— -->
+      <section id="contact" class="closing">
+        <div class="closing-inner">
+          <div
+            class="eyebrow"
+            style="justify-content: center; display: inline-flex"
           >
+            CONTACT · 문의
+          </div>
+          <h2>
+            당신의 이야기를 들려주세요.<br /><em>따뜻한 상담</em>, 가볍게
+            시작합니다.
+          </h2>
+          <p>
+            전화 또는 이메일로 편하게 연락 주세요. 말로 옮기기 어려우시다면<br />한두
+            문장만 보내주셔도 괜찮습니다. 제가 먼저 다정히 답하겠습니다.
+          </p>
+          <div
+            style="
+              display: flex;
+              gap: 14px;
+              justify-content: center;
+              flex-wrap: wrap;
+              align-items: center;
+            "
+          >
+            <a class="btn-primary" href="tel:01086601395"
+              >010 · 8660 · 1395 <span class="arrow"></span
+            ></a>
+            <a class="btn-ghost" href="mailto:uninet1355057@hanmail.net"
+              >uninet1355057@hanmail.net</a
+            >
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
     <footer>
       <div class="foot-grid">
