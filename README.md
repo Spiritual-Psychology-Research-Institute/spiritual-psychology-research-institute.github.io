@@ -5,7 +5,7 @@
 영성(심리)학박사 김윤희 박사의 상담 연구소 소개 사이트입니다.
 숲을 걷듯 편안한 공간에서, 당신의 이야기에 깊이 머무르는 1인 상담실.
 
-**🌐 Live site:** <https://spiritual-psychology-research-institute.github.io/Sai-Spiritual-Psychology-Research-Institute-Site/>
+**🌐 Live site:** <https://spiritual-psychology-research-institute.github.io/>
 
 ---
 
