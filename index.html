@@ -778,6 +778,18 @@
         color: rgba(31, 42, 35, 0.25);
         transform: rotate(-8deg);
       }
+      .portrait-frame .portrait-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 28%;
+      }
+      /* real photo present — drop the decorative placeholder texture */
+      .portrait-frame.has-photo::before {
+        display: none;
+      }
 
       .about-text {
         font-size: 16px;
@@ -1066,93 +1078,33 @@
         border: 1px solid rgba(214, 181, 119, 0.25);
         min-height: 460px;
       }
-      .map svg {
+      .map-embed {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
+        border: 0;
       }
-      .map .pin {
-        /* SVG building label "사이間" sits at viewBox (335..380, 208..222) =
-           ~(60%, 47%). Center the pin on that point via transform so the
-           pin's center (not its top-left corner) is what 60%/47% targets. */
+      .map-open {
         position: absolute;
-        left: 60%;
-        top: 47%;
-        transform: translate(-50%, -50%);
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--terra);
-        box-shadow:
-          0 0 0 8px rgba(163, 106, 74, 0.25),
-          0 0 0 16px rgba(163, 106, 74, 0.15);
-      }
-      .map .pin::after {
-        content: "";
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        border: 1px solid rgba(163, 106, 74, 0.5);
-        transform: translate(-50%, -50%);
-        animation: pulse 2.4s ease-out infinite;
-      }
-      @keyframes pulse {
-        0% {
-          transform: translate(-50%, -50%) scale(0.4);
-          opacity: 1;
-        }
-        100% {
-          transform: translate(-50%, -50%) scale(1.6);
-          opacity: 0;
-        }
-      }
-      .map .legend {
-        position: absolute;
-        left: 20px;
-        top: 20px;
-        font-family: "JetBrains Mono", "Courier New", monospace;
-        font-size: 10px;
-        letter-spacing: 0.28em;
-        color: rgba(244, 239, 230, 0.6);
-        text-transform: uppercase;
-      }
-      .map .scale {
-        position: absolute;
-        right: 20px;
-        bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
+        right: 16px;
+        bottom: 16px;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
         gap: 6px;
-        font-family: "JetBrains Mono", "Courier New", monospace;
-        font-size: 10px;
-        letter-spacing: 0.2em;
-        color: rgba(244, 239, 230, 0.55);
+        padding: 9px 14px;
+        background: var(--paper);
+        color: var(--moss-deep);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        border-radius: 4px;
+        border-left: 2px solid var(--terra);
+        box-shadow: 0 8px 24px -10px rgba(31, 42, 35, 0.5);
+        transition: transform 0.2s ease;
       }
-      .map .scale .bar {
-        width: 60px;
-        height: 1px;
-        background: rgba(244, 239, 230, 0.5);
-        position: relative;
-      }
-      .map .scale .bar::before,
-      .map .scale .bar::after {
-        content: "";
-        position: absolute;
-        width: 1px;
-        height: 6px;
-        background: rgba(244, 239, 230, 0.5);
-        top: -3px;
-      }
-      .map .scale .bar::before {
-        left: 0;
-      }
-      .map .scale .bar::after {
-        right: 0;
+      .map-open:hover {
+        transform: translateY(-2px);
       }
 
       .loc-info {
@@ -1521,9 +1473,15 @@
 
         <div class="about-grid">
           <div class="about-portrait reveal">
-            <div class="portrait-frame">
-              <span class="ph-tag">[ portrait · 김윤희 박사 ]</span>
-              <span class="signature">Y. Kim</span>
+            <div class="portrait-frame has-photo">
+              <img
+                class="portrait-photo"
+                src="assets/director.jpg"
+                alt="김윤희 박사"
+                width="900"
+                height="1200"
+                loading="lazy"
+              />
               <div class="name-plate">
                 <div class="ko">김윤희 박사</div>
                 <div class="role">Director · Ph.D.</div>
@@ -1717,153 +1675,21 @@
 
         <div class="loc-grid">
           <div class="map reveal">
-            <svg
-              viewBox="0 0 600 460"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-              role="presentation"
+            <iframe
+              class="map-embed"
+              title="사이間 영성심리 연구소 위치 — 경기도 부천시 송내대로 265번길 85"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA8xz5KM_nSnpgUZhx3kod7q1FdATeWDXU&amp;q=%EA%B2%BD%EA%B8%B0%EB%8F%84+%EB%B6%80%EC%B2%9C%EC%8B%9C+%EC%86%A1%EB%82%B4%EB%8C%80%EB%A1%9C+265%EB%B2%88%EA%B8%B8+85&amp;zoom=17&amp;language=ko"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+            ></iframe>
+            <a
+              class="map-open"
+              href="https://map.kakao.com/?q=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EB%B6%80%EC%B2%9C%EC%8B%9C%20%EC%86%A1%EB%82%B4%EB%8C%80%EB%A1%9C%20265%EB%B2%88%EA%B8%B8%2085"
+              target="_blank"
+              rel="noopener"
+              >카카오맵에서 길찾기 →</a
             >
-              <defs>
-                <pattern
-                  id="grid"
-                  width="40"
-                  height="40"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <path
-                    d="M40 0H0V40"
-                    fill="none"
-                    stroke="rgba(214,181,119,.08)"
-                    stroke-width="1"
-                  />
-                </pattern>
-              </defs>
-              <rect width="600" height="460" fill="url(#grid)" />
-              <!-- roads -->
-              <path
-                d="M-10 230 L610 230"
-                stroke="rgba(214,181,119,.5)"
-                stroke-width="14"
-                fill="none"
-                stroke-linecap="round"
-              />
-              <path
-                d="M320 -10 L320 470"
-                stroke="rgba(214,181,119,.35)"
-                stroke-width="10"
-                fill="none"
-              />
-              <path
-                d="M0 110 Q200 120 320 230"
-                stroke="rgba(214,181,119,.22)"
-                stroke-width="6"
-                fill="none"
-              />
-              <path
-                d="M600 350 Q420 340 320 230"
-                stroke="rgba(214,181,119,.22)"
-                stroke-width="6"
-                fill="none"
-              />
-              <!-- station marker -->
-              <circle
-                cx="300"
-                cy="230"
-                r="14"
-                fill="none"
-                stroke="#d6b577"
-                stroke-width="2"
-              />
-              <circle cx="300" cy="230" r="5" fill="#d6b577" />
-              <text
-                x="280"
-                y="218"
-                fill="rgba(244,239,230,.7)"
-                font-family="'JetBrains Mono',monospace"
-                font-size="10"
-                letter-spacing="2"
-              >
-                SANGDONG STN.
-              </text>
-              <text
-                x="280"
-                y="208"
-                fill="rgba(214,181,119,.85)"
-                font-family="'JetBrains Mono',monospace"
-                font-size="9"
-                letter-spacing="3"
-              >
-                EXIT 7 →
-              </text>
-              <!-- our building label -->
-              <text
-                x="335"
-                y="208"
-                fill="#f4efe6"
-                font-family="'Noto Serif KR',serif"
-                font-size="14"
-              >
-                사이間
-              </text>
-              <text
-                x="335"
-                y="222"
-                fill="rgba(244,239,230,.6)"
-                font-family="'JetBrains Mono',monospace"
-                font-size="9"
-                letter-spacing="2"
-              >
-                RESEARCH · 6F
-              </text>
-              <!-- distance dashes -->
-              <path
-                d="M308 226 Q320 220 326 218"
-                stroke="#a36a4a"
-                stroke-width="1.5"
-                stroke-dasharray="3 4"
-                fill="none"
-              />
-              <text
-                x="310"
-                y="245"
-                fill="#d6b577"
-                font-family="'JetBrains Mono',monospace"
-                font-size="9"
-                letter-spacing="2"
-              >
-                10 m
-              </text>
-              <!-- compass -->
-              <g
-                transform="translate(540,60)"
-                fill="rgba(244,239,230,.5)"
-                stroke="rgba(244,239,230,.5)"
-                stroke-width="1"
-              >
-                <circle cx="0" cy="0" r="22" fill="none" />
-                <path
-                  d="M0 -18 L4 0 L0 18 L-4 0 Z"
-                  fill="rgba(244,239,230,.4)"
-                  stroke="none"
-                />
-                <text
-                  x="-4"
-                  y="-26"
-                  font-family="'JetBrains Mono',monospace"
-                  font-size="9"
-                  stroke="none"
-                  fill="rgba(244,239,230,.7)"
-                >
-                  N
-                </text>
-              </g>
-            </svg>
-            <div class="pin"></div>
-            <div class="legend">[ map · 부천 송내대로 ]</div>
-            <div class="scale">
-              <div class="bar"></div>
-              <div>0 ─ 10 m</div>
-            </div>
           </div>
 
           <div class="loc-info reveal">
