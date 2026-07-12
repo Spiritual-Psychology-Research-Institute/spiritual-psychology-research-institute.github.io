@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A single-page marketing site for **사이間 영성심리 연구소** (Sai-Gan Spiritual Psychology Research Institute), the counseling practice of 김윤희 Ph.D. Content is in Korean. There is **no build step, no framework, and no dependencies** — everything is hand-authored HTML/CSS/JS.
+A single-page marketing site for **사이 영성심리 연구소** (Sai Spiritual Psychology Research Institute), the counseling practice of 김윤희 Ph.D. Content is in Korean. There is **no build step, no framework, and no dependencies** — everything is hand-authored HTML/CSS/JS.
 
 ## Files
 
