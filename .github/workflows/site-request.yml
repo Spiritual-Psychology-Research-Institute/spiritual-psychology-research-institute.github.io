@@ -97,6 +97,13 @@ jobs:
           echo "files=$files" >> "$GITHUB_OUTPUT"
           echo "merged=true" >> "$GITHUB_OUTPUT"
 
+          # PR 본문의 "Closes #N" 만으로는 닫히지 않는다. 봇이 만든 PR 은
+          # 자동 연결 닫기가 동작하지 않아 처리된 이슈가 계속 열려 있고,
+          # 무엇이 남았는지 구분할 수 없게 된다. 명시적으로 닫는다.
+          gh issue close "${{ github.event.issue.number }}" \
+            --comment "반영 완료. PR #${{ steps.findpr.outputs.pr }} 가 머지되어 배포되었습니다." \
+            || echo "::warning::이슈 닫기 실패"
+
       - name: 검사 실패 - PR 을 열어둔 채 보고
         if: steps.findpr.outputs.pr != '' && steps.validate.outcome == 'failure'
         env:
