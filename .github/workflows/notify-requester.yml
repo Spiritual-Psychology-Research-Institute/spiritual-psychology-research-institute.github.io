@@ -14,17 +14,35 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - uses: actions/checkout@v4
+      - name: 설정 여부 확인
+        id: guard
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ALLOWED_SENDERS: ${{ secrets.ALLOWED_SENDERS }}
+        run: |
+          if [ -z "$MAIL_USER" ] || [ -z "$MAIL_PASSWORD" ] || [ -z "$ALLOWED_SENDERS" ]; then
+            echo "::notice::시크릿이 아직 설정되지 않아 회신을 건너뜁니다."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
 
-      - uses: actions/setup-node@v4
+      - if: steps.guard.outputs.ready == 'true'
+        uses: actions/checkout@v4
+
+      - if: steps.guard.outputs.ready == 'true'
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
 
       - name: 의존성 설치
+        if: steps.guard.outputs.ready == 'true'
         working-directory: .github/scripts
         run: npm install --no-audit --no-fund
 
       - name: 회신 메일 발송
+        if: steps.guard.outputs.ready == 'true'
         working-directory: .github/scripts
         env:
           MAIL_HOST: ${{ vars.SMTP_HOST || 'smtp.gmail.com' }}
