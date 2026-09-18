@@ -111,6 +111,23 @@ jobs:
           } > "${{ runner.temp }}/comment.md"
           gh pr comment "${{ steps.findpr.outputs.pr }}" --body-file "${{ runner.temp }}/comment.md"
 
+      # 검사에서 걸리면 PR 만 열린 채 남는다. 알리지 않으면 요청자는
+      # 답을 영영 받지 못하고 관리자는 걸린 줄도 모른다.
+      - name: 검사 실패 - 관리자에게 알림
+        if: steps.findpr.outputs.pr != '' && steps.validate.outcome == 'failure'
+        working-directory: .github/scripts
+        env:
+          MAIL_HOST: ${{ vars.SMTP_HOST || 'smtp.gmail.com' }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ALERT_TO: ${{ vars.NOTIFY_CC || 'kakwak123@gmail.com' }}
+          WORKFLOW_NAME: "수정 요청 처리 - 머지 전 검사에서 걸림 (PR 열려 있음)"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/pull/${{ steps.findpr.outputs.pr }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+        run: |
+          npm install --no-audit --no-fund >/dev/null 2>&1 || true
+          node send-alert.mjs || true
+
       - name: 회신 메일 발송
         if: steps.merge.outputs.merged == 'true'
         working-directory: .github/scripts

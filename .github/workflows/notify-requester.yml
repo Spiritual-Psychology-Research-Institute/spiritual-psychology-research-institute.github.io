@@ -8,9 +8,13 @@ on:
 
 jobs:
   notify:
+    # 자동화가 만든 PR 인지 본문의 이슈 참조로 판단한다. 브랜치 이름으로는
+    # 알 수 없다 - Claude 가 자기 방식대로 짓는다.
+    # 자동 머지는 GITHUB_TOKEN 이 하므로 이 워크플로를 깨우지 않는다.
+    # 즉 여기 오는 것은 사람이 직접 머지한 경우뿐이고 중복 발송은 없다.
     if: >-
       github.event.pull_request.merged == true &&
-      startsWith(github.event.pull_request.head.ref, 'request/')
+      contains(github.event.pull_request.body, 'Closes #')
     runs-on: ubuntu-latest
     permissions: {}
     steps:
