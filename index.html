@@ -138,6 +138,8 @@
         --moss-mid: #9aa085; /* light khaki */
         --terra: #b08a5e; /* warm tan accent, harmonizes w/ khaki */
         --gold: #b39866;
+        --gold-light: #d6b577; /* gold for the dark moss bands — --gold/--terra
+                                  are too dim against --moss-deep */
       }
       * {
         box-sizing: border-box;
@@ -173,6 +175,31 @@
       }
       .latin {
         font-family: "Cormorant Garamond", serif;
+      }
+      ::selection {
+        background: var(--moss-deep);
+        color: var(--paper);
+      }
+      /* visible keyboard focus — the default ring is nearly invisible on the
+         paper palette, and several links sit on dark bands */
+      a:focus-visible,
+      button:focus-visible,
+      iframe:focus-visible {
+        outline: 2px solid var(--moss-deep);
+        outline-offset: 3px;
+        border-radius: 3px;
+      }
+      /* the ring sits outside the element, so on the dark bands it needs the
+         light gold to stay visible */
+      .location :focus-visible,
+      footer :focus-visible {
+        outline-color: var(--gold-light);
+      }
+      /* likewise for selected text on the dark bands */
+      .location ::selection,
+      footer ::selection {
+        background: var(--paper);
+        color: var(--moss-deep);
       }
 
       /* ——— grain + subtle texture ——— */
@@ -267,6 +294,23 @@
       .nav .cta:hover {
         background: var(--moss-deep);
         color: #f4efe6;
+      }
+      /* reading-progress hairline along the bottom edge of the nav */
+      .nav-progress {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--moss), var(--terra));
+        transform: scaleX(0);
+        transform-origin: left;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        pointer-events: none;
+      }
+      .nav.scrolled .nav-progress {
+        opacity: 1;
       }
 
       /* ——— hero ——— */
@@ -532,15 +576,6 @@
         clip-path: polygon(40% 0, 60% 0, 90% 100%, 10% 100%);
         filter: blur(1px);
       }
-      .hero-frame .placeholder {
-        position: absolute;
-        inset: auto 0 18px 0;
-        text-align: center;
-        color: rgba(244, 239, 230, 0.55);
-        font-family: "JetBrains Mono", "Courier New", monospace;
-        font-size: 10px;
-        letter-spacing: 0.3em;
-      }
       .hero-frame .vignette {
         position: absolute;
         inset: 0;
@@ -632,6 +667,11 @@
         letter-spacing: 0.32em;
         color: var(--muted);
         text-transform: uppercase;
+      }
+      /* hold the line still while it is being read */
+      .ticker:hover .ticker-track,
+      .ticker:focus-within .ticker-track {
+        animation-play-state: paused;
       }
       .ticker-track span {
         display: inline-flex;
@@ -891,12 +931,15 @@
         gap: 24px;
         transition:
           transform 0.4s ease,
-          box-shadow 0.4s ease;
+          box-shadow 0.4s ease,
+          border-color 0.4s ease;
         cursor: pointer;
       }
-      .svc:hover {
+      .svc:hover,
+      .svc:focus-visible {
         transform: translateY(-4px);
         box-shadow: 0 30px 60px -30px rgba(31, 42, 35, 0.25);
+        border-color: var(--moss-mid);
       }
       .svc-head {
         display: flex;
@@ -924,6 +967,14 @@
         font-family: "Noto Serif KR", serif;
         font-size: 24px;
         color: var(--moss-deep);
+        transition:
+          background 0.4s ease,
+          color 0.4s ease;
+      }
+      .svc:hover .svc-glyph,
+      .svc:focus-visible .svc-glyph {
+        background: var(--moss-deep);
+        color: var(--paper);
       }
       .svc-title {
         font-family: "Noto Serif KR", serif;
@@ -997,6 +1048,11 @@
         font-family: "Cormorant Garamond", serif;
         font-style: italic;
         color: var(--terra);
+        transition: transform 0.3s ease;
+      }
+      .svc:hover .svc-foot .arrow,
+      .svc:focus-visible .svc-foot .arrow {
+        transform: translateX(5px);
       }
 
       /* approach band */
@@ -1143,16 +1199,16 @@
         pointer-events: none;
       }
       .location .section-num {
-        color: #d6b577;
+        color: var(--gold-light);
       }
       .location .section-num .line {
-        background: #d6b577;
+        background: var(--gold-light);
       }
       .location .section-title {
         color: #f4efe6;
       }
       .location .section-title .accent {
-        color: #d6b577;
+        color: var(--gold-light);
       }
       .loc-grid {
         max-width: 1240px;
@@ -1217,7 +1273,7 @@
       .loc-row .lab {
         font-size: 11px;
         letter-spacing: 0.32em;
-        color: #d6b577;
+        color: var(--gold-light);
         text-transform: uppercase;
         margin-bottom: 10px;
       }
@@ -1234,7 +1290,7 @@
         transition: border-color 0.25s ease;
       }
       .loc-row .val a:hover {
-        border-color: #d6b577;
+        border-color: var(--gold-light);
       }
       .loc-row .hint {
         margin-top: 8px;
@@ -1330,7 +1386,7 @@
         font-family: "Noto Serif KR", serif;
         font-size: 13px;
         letter-spacing: 0.18em;
-        color: #d6b577;
+        color: var(--gold-light);
         text-transform: uppercase;
         margin: 0 0 18px;
         font-weight: 500;
@@ -1343,6 +1399,9 @@
         flex-direction: column;
         gap: 10px;
         font-size: 13px;
+      }
+      .foot-col a {
+        transition: color 0.25s ease;
       }
       .foot-col a:hover {
         color: #f4efe6;
@@ -1469,6 +1528,34 @@
         opacity: 1;
         transform: none;
       }
+      /* siblings in a row come in one after another rather than all at once */
+      .svc-grid .reveal:nth-child(2),
+      .approach .reveal:nth-child(2) {
+        transition-delay: 0.1s;
+      }
+      .approach .reveal:nth-child(3) {
+        transition-delay: 0.2s;
+      }
+      .approach .reveal:nth-child(4) {
+        transition-delay: 0.3s;
+      }
+
+      /* motion-sensitive visitors: no ticker loop, no fade-up, no easing */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          transition-delay: 0s !important;
+          scroll-behavior: auto !important;
+        }
+        .reveal {
+          opacity: 1;
+          transform: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1484,6 +1571,7 @@
         <li><a href="#contact" class="nav-link">문의</a></li>
       </ul>
       <a class="cta" href="#contact">상담 신청</a>
+      <div class="nav-progress" id="nav-progress" aria-hidden="true"></div>
     </nav>
 
     <!-- ——— HERO ——— -->
@@ -1514,7 +1602,6 @@
           <div class="trees" id="trees"></div>
           <div class="path"></div>
           <div class="vignette"></div>
-          <div class="placeholder">[ ph · 숲길 / forest path photograph ]</div>
         </div>
 
         <aside class="ki-card">
@@ -1913,6 +2000,7 @@
           <ul>
             <li><a href="#about">소개</a></li>
             <li><a href="#services">상담 안내</a></li>
+            <li><a href="#research">연구</a></li>
             <li><a href="#location">오시는 길</a></li>
             <li><a href="#contact">문의</a></li>
           </ul>
@@ -1943,11 +2031,20 @@
     </footer>
 
     <script>
-      // nav scroll state
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      // nav scroll state + reading-progress hairline
       const nav = document.getElementById("nav");
-      const onScroll = () =>
+      const progress = document.getElementById("nav-progress");
+      const onScroll = () => {
         nav.classList.toggle("scrolled", window.scrollY > 30);
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio =
+          max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+        progress.style.transform = `scaleX(${ratio})`;
+      };
       document.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
       onScroll();
 
       // smooth scroll — offset by the actual nav height so anchor
@@ -1962,7 +2059,7 @@
           const offset = nav.offsetHeight + 8;
           window.scrollTo({
             top: t.getBoundingClientRect().top + window.scrollY - offset,
-            behavior: "smooth",
+            behavior: reduceMotion.matches ? "auto" : "smooth",
           });
         });
       });
