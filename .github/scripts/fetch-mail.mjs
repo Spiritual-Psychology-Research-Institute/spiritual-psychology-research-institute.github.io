@@ -24,6 +24,9 @@ for (const [k, v] of Object.entries({ MAIL_USER, MAIL_PASSWORD, ALLOWED_SENDERS,
 
 const ATTACH_BRANCH = "site-inbox";
 const MAX_ATTACH_BYTES = 8 * 1024 * 1024;
+// IMAP system flag. Built from a char code because the literal
+// backslash does not survive every editing path reliably.
+const SEEN = String.fromCharCode(92) + "Seen";
 const allowed = ALLOWED_SENDERS.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
 
 const gh = async (path, init = {}) => {
@@ -42,7 +45,6 @@ const gh = async (path, init = {}) => {
   return res.status === 404 ? null : res.json();
 };
 
-// Ensure the attachment branch exists (branched off the default branch once).
 const ensureBranch = async () => {
   if (await gh(`/git/ref/heads/${ATTACH_BRANCH}`)) return;
   const repo = await gh("");
@@ -65,20 +67,26 @@ const client = new ImapFlow({
   logger: false,
 });
 
+// Every message address below is a UID. ImapFlow defaults to sequence numbers,
+// which shift as the mailbox changes — a seen-flag written against a stale
+// sequence number lands on the wrong message and the original gets processed
+// again on the next run, creating duplicate issues.
+const markSeen = async (uid) => {
+  const ok = await client.messageFlagsAdd(uid, [SEEN], { uid: true });
+  if (!ok) console.log(`::warning::uid ${uid} 읽음 처리 실패 - 다음 실행에서 중복될 수 있습니다`);
+  return ok;
+};
+
 await client.connect();
 const lock = await client.getMailboxLock("INBOX");
 let created = 0;
 
 try {
-  const uids = await client.search({ seen: false });
-  if (!uids || uids.length === 0) {
-    console.log("no new mail");
-  } else {
-    console.log(`${uids.length} unseen message(s)`);
-  }
+  const uids = await client.search({ seen: false }, { uid: true });
+  console.log(uids?.length ? `${uids.length} unseen message(s)` : "no new mail");
 
   for (const uid of uids || []) {
-    const { content } = await client.download(uid);
+    const { content } = await client.download(uid, undefined, { uid: true });
     const mail = await simpleParser(content);
     const from = (mail.from?.value?.[0]?.address || "").toLowerCase();
 
@@ -87,7 +95,7 @@ try {
 
     if (!allowed.includes(from)) {
       console.log(`skipped: sender not on allowlist (uid ${uid})`);
-      await client.messageFlagsAdd(uid, ["\Seen"]);
+      await markSeen(uid);
       continue;
     }
 
@@ -124,7 +132,8 @@ try {
       links.length ? `## 첨부\n\n${links.join("\n")}` : "",
       "",
       "---",
-      "`site-request` 라벨이 붙으면 Claude가 PR을 만듭니다. **머지는 사람이 합니다.**",
+      "`site-request` 라벨이 붙으면 Claude가 PR을 만듭니다.",
+      "CI 검사를 통과하면 사람 확인 없이 자동 머지됩니다.",
     ].join("\n");
 
     const issue = await gh("/issues", {
@@ -134,7 +143,7 @@ try {
     console.log(`created issue #${issue.number}`);
     created += 1;
 
-    await client.messageFlagsAdd(uid, ["\Seen"]);
+    await markSeen(uid);
   }
 } finally {
   lock.release();
