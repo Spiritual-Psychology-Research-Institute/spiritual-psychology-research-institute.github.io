@@ -29,6 +29,7 @@ export const PAIRS = [
   ["ink", "bg"], ["ink", "paper"], ["ink-soft", "paper"], ["muted", "paper"],
   ["muted", "bg"], ["moss-deep", "bg"], ["moss-deep", "paper"], ["terra", "paper"],
   ["gold", "moss-deep"], ["gold-light", "moss-deep"], ["moss-mid", "moss-deep"],
+  ["gold-pale", "moss-deep"],
 ];
 
 export const tokensOf = (src) =>
