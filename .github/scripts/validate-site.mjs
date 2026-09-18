@@ -3,6 +3,7 @@
 // 하나라도 실패하면 PR은 열린 채로 남고 자동 머지되지 않는다.
 import { execSync } from "node:child_process";
 import fs from "node:fs";
+import { ratios } from "./check-contrast.mjs";
 
 const BASE = process.env.BASE_REF || "origin/main";
 const ALLOW = [/^index\.html$/, /^404\.html$/, /^docs\//];
@@ -46,6 +47,32 @@ if (fs.existsSync("index.html")) {
   }
 
   if (!/<title>.*<\/title>/.test(s)) fail.push("title 태그가 없습니다.");
+}
+
+// 3) 명도 대비 회귀. 절대 기준으로 막지 않는다 - 기존에도 미달 조합이 있어
+// 무관한 요청까지 전부 걸린다. "이번 변경으로 나빠졌는가" 만 본다.
+// 사람 리뷰 없이 배포되므로 색 변경의 부작용을 여기서 잡아야 한다.
+if (fs.existsSync("index.html")) {
+  try {
+    const before = ratios(execSync(`git show ${BASE}:index.html`, { encoding: "utf8", maxBuffer: 32e6 }));
+    const after = ratios(fs.readFileSync("index.html", "utf8"));
+    let worse = 0, better = 0;
+    for (const [pair, a] of Object.entries(after)) {
+      const b = before[pair];
+      if (!b) continue;
+      const delta = a.ratio - b.ratio;
+      if (delta < -0.05) {
+        fail.push(`대비 악화: ${pair} ${b.ratio.toFixed(2)}:1 -> ${a.ratio.toFixed(2)}:1`);
+        worse += 1;
+      } else if (delta > 0.05) {
+        ok.push(`대비 개선: ${pair} ${b.ratio.toFixed(2)}:1 -> ${a.ratio.toFixed(2)}:1`);
+        better += 1;
+      }
+    }
+    if (!worse && !better) ok.push("대비 변화 없음");
+  } catch (e) {
+    ok.push("대비 비교 건너뜀: " + String(e.message).slice(0, 80));
+  }
 }
 
 const report = [
