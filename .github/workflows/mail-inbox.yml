@@ -19,7 +19,8 @@ concurrency:
 jobs:
   poll:
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      actions: read
     steps:
       # 시크릿을 넣기 전에도 15분마다 실패 메일이 날아오지 않도록,
       # 설정이 끝나지 않았으면 조용히 건너뜁니다.
@@ -65,6 +66,32 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: node fetch-mail.mjs
+
+      # 하트비트가 죽으면 되살릴 수단이 고장난 cron 뿐이라 자동화 전체가
+      # 멈춘다. 메일 확인이 돌 때마다 하트비트 생존을 확인하고 없으면 띄운다.
+      # 읽기는 GITHUB_TOKEN 으로, 깨우기는 PAT 으로 한다
+      # (GITHUB_TOKEN 은 다른 워크플로를 트리거하지 못한다).
+      - name: 하트비트 생존 확인
+        if: steps.guard.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAT: ${{ secrets.AUTOMATION_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          n=$(gh api "repos/$REPO/actions/workflows/mail-keepalive.yml/runs?status=in_progress" \
+                --jq '.total_count' 2>/dev/null || echo "-1")
+          if [ "$n" = "-1" ]; then
+            echo "::notice::하트비트 상태를 확인하지 못했습니다 (권한 부족일 수 있음). 건너뜁니다."
+          elif [ "$n" = "0" ]; then
+            echo "::warning::하트비트가 멈춰 있습니다. 다시 띄웁니다."
+            curl -s -o /dev/null -X POST \
+              -H "Authorization: Bearer $PAT" \
+              -H "Accept: application/vnd.github+json" \
+              -d '{"event_type":"keepalive"}' \
+              "https://api.github.com/repos/$REPO/dispatches"
+          else
+            echo "하트비트 정상 (실행 중 ${n}건)"
+          fi
 
       # 무인 운영에서는 침묵이 정상과 구분되지 않는다. 실패를 메일로 알린다.
       - name: 실패 시 관리자에게 알림
