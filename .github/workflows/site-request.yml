@@ -33,7 +33,12 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           branch_prefix: "request/"
+          # 모델을 명시하지 않으면 Opus(1M 컨텍스트) 로 돌아 요청 하나에
+          # $1~3 이 든다. 이 저장소의 일은 HTML 한 파일에서 문구를 바꾸고
+          # 섹션을 더하는 수준이라 Sonnet 으로 충분하고 비용이 1/5 이 된다.
+          # 품질이 아쉬우면 저장소 변수 CLAUDE_MODEL 로 올릴 수 있다.
           claude_args: >-
+            --model ${{ vars.CLAUDE_MODEL || 'claude-sonnet-5' }}
             --allowedTools "Read,Edit,Write,Grep,Glob,Bash(git:*),Bash(gh issue view:*),Bash(gh issue comment:*),Bash(gh pr create:*)"
           prompt: |
             이슈 #${{ github.event.issue.number }} 는 이 사이트 운영자(김윤희 박사)가
