@@ -106,7 +106,12 @@ try {
     if (from) console.log(`::add-mask::${from}`);
 
     if (!allowed.includes(from)) {
-      console.log(`skipped: sender not on allowlist (uid ${uid})`);
+      // 전체 주소는 공개 로그에 남길 수 없지만, 아무 힌트도 없으면 주소가
+      // 틀렸는지 알아내려고 메일함을 직접 열어봐야 한다. 앞 두 글자와
+      // 도메인만 남긴다.
+      const at = from.indexOf("@");
+      const hint = at > 0 ? `${from.slice(0, 2)}***${from.slice(at)}` : "(발신자 없음)";
+      console.log(`skipped: 화이트리스트에 없는 발신자 ${hint} (uid ${uid})`);
       await markSeen(uid);
       continue;
     }
