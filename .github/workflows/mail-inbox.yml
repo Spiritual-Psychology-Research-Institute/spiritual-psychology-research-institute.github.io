@@ -4,8 +4,13 @@ name: 메일 수신함 확인
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    # 정각을 피한다. GitHub 예약 실행은 매시 정각 부근에 부하가 몰려
+    # 지연되거나 건너뛴다. */15 는 :00 을 정확히 때리므로 가장 불리하다.
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
+  # 예약이 지연될 때를 대비한 수동/외부 트리거.
+  repository_dispatch:
+    types: [check-mail]
 
 concurrency:
   group: mail-inbox
