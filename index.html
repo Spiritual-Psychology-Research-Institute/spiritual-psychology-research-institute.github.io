@@ -140,6 +140,10 @@
         --gold: #b39866;
         --gold-light: #d6b577; /* gold for the dark moss bands — --gold/--terra
                                   are too dim against --moss-deep */
+        --gold-pale: #f0ddae; /* small gold text on --moss-deep: --gold-light is
+                                 only 3.16:1 there, under the WCAG AA 4.5:1 rule
+                                 for text below 24px. This is 4.62:1. Large
+                                 accents keep --gold-light (3:1 is enough). */
       }
       * {
         box-sizing: border-box;
@@ -1198,11 +1202,12 @@
         );
         pointer-events: none;
       }
+      /* 18px regular counts as small text for AA — needs --gold-pale */
       .location .section-num {
-        color: var(--gold-light);
+        color: var(--gold-pale);
       }
       .location .section-num .line {
-        background: var(--gold-light);
+        background: var(--gold-pale);
       }
       .location .section-title {
         color: #f4efe6;
@@ -1273,7 +1278,7 @@
       .loc-row .lab {
         font-size: 11px;
         letter-spacing: 0.32em;
-        color: var(--gold-light);
+        color: var(--gold-pale);
         text-transform: uppercase;
         margin-bottom: 10px;
       }
@@ -1386,7 +1391,7 @@
         font-family: "Noto Serif KR", serif;
         font-size: 13px;
         letter-spacing: 0.18em;
-        color: var(--gold-light);
+        color: var(--gold-pale);
         text-transform: uppercase;
         margin: 0 0 18px;
         font-weight: 500;
