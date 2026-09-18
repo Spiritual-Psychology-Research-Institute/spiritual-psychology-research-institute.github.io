@@ -1,0 +1,62 @@
+# 고모 -> 메일 -> 이슈.
+# 15분마다 전용 메일함을 확인해 허용된 발신자의 메일만 `site-request` 이슈로 만듭니다.
+name: 메일 수신함 확인
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: mail-inbox
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      # 시크릿을 넣기 전에도 15분마다 실패 메일이 날아오지 않도록,
+      # 설정이 끝나지 않았으면 조용히 건너뜁니다.
+      - name: 설정 여부 확인
+        id: guard
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ALLOWED_SENDERS: ${{ secrets.ALLOWED_SENDERS }}
+          AUTOMATION_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+        run: |
+          if [ -z "$MAIL_USER" ] || [ -z "$MAIL_PASSWORD" ] \
+             || [ -z "$ALLOWED_SENDERS" ] || [ -z "$AUTOMATION_TOKEN" ]; then
+            echo "::notice::시크릿이 아직 설정되지 않아 건너뜁니다. docs/AUTOMATION.md 참고."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.guard.outputs.ready == 'true'
+        uses: actions/checkout@v4
+
+      - if: steps.guard.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 의존성 설치
+        if: steps.guard.outputs.ready == 'true'
+        working-directory: .github/scripts
+        run: npm install --no-audit --no-fund
+
+      - name: 새 메일을 이슈로 변환
+        if: steps.guard.outputs.ready == 'true'
+        working-directory: .github/scripts
+        env:
+          MAIL_HOST: ${{ vars.MAIL_HOST || 'imap.gmail.com' }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ALLOWED_SENDERS: ${{ secrets.ALLOWED_SENDERS }}
+          # GITHUB_TOKEN 으로 만든 이슈는 다른 워크플로를 트리거하지 않습니다.
+          # 따라서 반드시 PAT 이어야 합니다.
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node fetch-mail.mjs

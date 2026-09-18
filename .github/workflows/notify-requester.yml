@@ -1,0 +1,54 @@
+# PR 머지 -> 고모에게 메일 회신.
+# 이게 없으면 고모는 요청이 처리됐는지 알 방법이 없습니다.
+name: 요청자에게 회신
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  notify:
+    if: >-
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'request/')
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: 설정 여부 확인
+        id: guard
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ALLOWED_SENDERS: ${{ secrets.ALLOWED_SENDERS }}
+        run: |
+          if [ -z "$MAIL_USER" ] || [ -z "$MAIL_PASSWORD" ] || [ -z "$ALLOWED_SENDERS" ]; then
+            echo "::notice::시크릿이 아직 설정되지 않아 회신을 건너뜁니다."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.guard.outputs.ready == 'true'
+        uses: actions/checkout@v4
+
+      - if: steps.guard.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 의존성 설치
+        if: steps.guard.outputs.ready == 'true'
+        working-directory: .github/scripts
+        run: npm install --no-audit --no-fund
+
+      - name: 회신 메일 발송
+        if: steps.guard.outputs.ready == 'true'
+        working-directory: .github/scripts
+        env:
+          MAIL_HOST: ${{ vars.SMTP_HOST || 'smtp.gmail.com' }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          REPLY_TO_EMAIL: ${{ secrets.ALLOWED_SENDERS }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: node send-reply.mjs
