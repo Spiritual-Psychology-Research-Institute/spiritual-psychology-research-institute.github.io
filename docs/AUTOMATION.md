@@ -119,12 +119,43 @@ GitHub 서버에서 실행되므로 상관없습니다.
 급한 수정이라 지금 당장 반영되어야 한다면 이 명령을 쓰거나, Actions 탭에서
 **메일 수신함 확인 → Run workflow** 를 누르면 됩니다.
 
-### 더 확실하게 하려면
+### 더 확실하게 하려면 — Gmail 이 직접 깨우기
 
-메일 도착 즉시(지연 0초) 처리되게 하려면 Gmail 쪽에서 밀어주는 방식이
-있습니다. Google Apps Script 에 트리거를 걸어 새 메일이 오면 위 dispatch
-API 를 호출하게 하는 것입니다. GitHub 예약에 의존하지 않고, 폴링도 사라집니다.
-지금 구조에서 그대로 얹을 수 있습니다.
+GitHub 예약이 계속 밀리면, Gmail 쪽에서 밀어주는 방식으로 바꿀 수 있습니다.
+폴링이 사라지고 메일 도착 후 1분 안에 처리됩니다.
+
+1. <https://script.google.com> 에서 새 프로젝트를 만듭니다
+   (반드시 `kakwaksai@gmail.com` 으로 로그인한 상태에서).
+2. 아래 코드를 붙여넣습니다.
+
+   ```javascript
+   const REPO = 'Spiritual-Psychology-Research-Institute/spiritual-psychology-research-institute.github.io';
+
+   function checkMail() {
+     // 안 읽은 메일이 있을 때만 GitHub 을 깨운다.
+     if (GmailApp.search('is:unread in:inbox', 0, 1).length === 0) return;
+
+     UrlFetchApp.fetch(`https://api.github.com/repos/${REPO}/dispatches`, {
+       method: 'post',
+       contentType: 'application/json',
+       headers: {
+         Authorization: 'Bearer ' + PropertiesService.getScriptProperties().getProperty('GH_TOKEN'),
+         Accept: 'application/vnd.github+json',
+       },
+       payload: JSON.stringify({ event_type: 'check-mail' }),
+       muteHttpExceptions: true,
+     });
+   }
+   ```
+
+3. 프로젝트 설정 → **스크립트 속성**에 `GH_TOKEN` 을 추가하고 값으로
+   `AUTOMATION_TOKEN` 과 같은 PAT 를 넣습니다.
+4. 트리거 → **트리거 추가** → `checkMail` / 시간 기반 / 분 단위 타이머 /
+   1분마다.
+
+GitHub 예약 실행은 그대로 두어도 됩니다. 둘 다 돌아도 같은 메일을 두 번
+처리하지 않습니다 — 처리한 메일은 읽음으로 표시되고, `concurrency` 설정이
+동시 실행을 막습니다.
 
 ## 알아둘 것
 
@@ -147,6 +178,13 @@ API 를 호출하게 하는 것입니다. GitHub 예약에 의존하지 않고, 
 
 Claude API는 요청 한 건당 수십 원 수준입니다. GitHub Actions는 공개 저장소라
 무료입니다. 15분 주기 폴링은 실행 시간이 거의 들지 않습니다.
+
+### 실패하면 알려줍니다
+
+메일 확인이나 수정 작업이 실패하면 `kakwak123@gmail.com` 으로 알림 메일이
+갑니다. 무인 운영에서 가장 위험한 건 침묵이 정상과 구분되지 않는 것이라,
+파이프라인이 죽으면 반드시 티가 나게 해두었습니다. 흔한 원인은 앱 비밀번호
+폐기, API 크레딧 소진, PAT 만료입니다.
 
 ### 요청이 빗나갈 때
 
