@@ -49,6 +49,8 @@ jobs:
           MAIL_USER: ${{ secrets.MAIL_USER }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           REPLY_TO_EMAIL: ${{ secrets.ALLOWED_SENDERS }}
+          NOTIFY_CC: ${{ vars.NOTIFY_CC || 'kakwak123@gmail.com' }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_URL: ${{ github.event.pull_request.html_url }}
+          AUTO_MERGED: "false"
         run: node send-reply.mjs
