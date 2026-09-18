@@ -1,0 +1,40 @@
+# 고모 -> 메일 -> 이슈.
+# 15분마다 전용 메일함을 확인해 허용된 발신자의 메일만 `site-request` 이슈로 만듭니다.
+name: 메일 수신함 확인
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: mail-inbox
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 의존성 설치
+        working-directory: .github/scripts
+        run: npm install --no-audit --no-fund
+
+      - name: 새 메일을 이슈로 변환
+        working-directory: .github/scripts
+        env:
+          MAIL_HOST: ${{ vars.MAIL_HOST || 'imap.gmail.com' }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ALLOWED_SENDERS: ${{ secrets.ALLOWED_SENDERS }}
+          # GITHUB_TOKEN 으로 만든 이슈는 다른 워크플로를 트리거하지 않습니다.
+          # 따라서 반드시 PAT 이어야 합니다.
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node fetch-mail.mjs

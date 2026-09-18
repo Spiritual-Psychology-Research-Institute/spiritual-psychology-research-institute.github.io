@@ -1,0 +1,11 @@
+{
+  "name": "sai-site-automation",
+  "private": true,
+  "type": "module",
+  "description": "CI-only helpers for the email->PR pipeline. Not shipped to the site.",
+  "dependencies": {
+    "imapflow": "^2.0.5",
+    "mailparser": "^3.9.28",
+    "nodemailer": "^10.0.10"
+  }
+}
