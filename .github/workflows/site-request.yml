@@ -55,17 +55,17 @@ jobs:
             - 확인이 필요한 부분
             - `Closes #${{ github.event.issue.number }}`
 
-      # 액션이 만든 PR 을 브랜치 이름으로 찾는다.
-      # branch_prefix 가 request/ 이므로 request/issue-<번호>-<타임스탬프> 형태다.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: PR 찾기
         id: findpr
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          n=$(gh pr list --state open --json number,headRefName --jq \
-            "[.[] | select(.headRefName | startswith(\"request/issue-${{ github.event.issue.number }}-\"))] | first | .number // empty")
-          echo "pr=$n" >> "$GITHUB_OUTPUT"
-          [ -n "$n" ] && echo "PR #$n 을 찾았습니다." || echo "::warning::PR 을 찾지 못했습니다."
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: node .github/scripts/find-pr.mjs
 
       - name: 머지 전 검사
         id: validate
@@ -104,11 +104,6 @@ jobs:
             cat "${{ runner.temp }}/report.md"
           } > "${{ runner.temp }}/comment.md"
           gh pr comment "${{ steps.findpr.outputs.pr }}" --body-file "${{ runner.temp }}/comment.md"
-
-      - uses: actions/setup-node@v4
-        if: steps.merge.outputs.merged == 'true'
-        with:
-          node-version: "20"
 
       - name: 회신 메일 발송
         if: steps.merge.outputs.merged == 'true'
