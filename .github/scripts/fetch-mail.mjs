@@ -7,6 +7,7 @@
 // the author intends for the site anyway.
 import { ImapFlow } from "imapflow";
 import { simpleParser } from "mailparser";
+import { stripQuoted } from "./strip-quoted.mjs";
 
 const {
   MAIL_HOST = "imap.gmail.com",
@@ -100,7 +101,9 @@ try {
     }
 
     const subject = (mail.subject || "제목 없음").trim().slice(0, 120);
-    const text = (mail.text || "").trim().slice(0, 12000);
+    // 답장이면 인용된 원문을 걷어낸다. 그대로 두면 Claude 가 이전 요청을
+    // 새 요청으로 오해하거나 우리가 보낸 안내문을 지시로 읽는다.
+    const text = stripQuoted(mail.text || "").trim().slice(0, 12000);
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
 
     const links = [];
