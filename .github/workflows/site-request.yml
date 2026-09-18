@@ -9,6 +9,12 @@ on:
   issues:
     types: [labeled]
 
+# 한 번에 하나씩만. 두 요청이 동시에 돌면 각자 main 에 머지하려다
+# 충돌하거나, 뒤늦게 머지된 쪽이 앞의 변경을 모른 채 덮어쓴다.
+concurrency:
+  group: site-request
+  cancel-in-progress: false
+
 jobs:
   edit:
     if: github.event.label.name == 'site-request'

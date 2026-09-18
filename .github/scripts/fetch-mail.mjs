@@ -24,6 +24,10 @@ for (const [k, v] of Object.entries({ MAIL_USER, MAIL_PASSWORD, ALLOWED_SENDERS,
 }
 
 const ATTACH_BRANCH = "site-inbox";
+// 한 번의 폴링에서 만드는 이슈 수 상한. 메일이 한꺼번에 몰리면 Claude 실행이
+// 그만큼 동시에 뜨고 비용도 같이 뛴다. 넘친 메일은 읽지 않은 채로 두므로
+// 다음 폴링에서 이어서 처리된다.
+const MAX_PER_RUN = 3;
 const MAX_ATTACH_BYTES = 8 * 1024 * 1024;
 // IMAP system flag. Built from a char code because the literal
 // backslash does not survive every editing path reliably.
@@ -87,6 +91,11 @@ try {
   console.log(uids?.length ? `${uids.length} unseen message(s)` : "no new mail");
 
   for (const uid of uids || []) {
+    if (created >= MAX_PER_RUN) {
+      console.log(`이번 실행 상한(${MAX_PER_RUN}건) 도달 - 나머지는 다음 실행에서 처리합니다.`);
+      break;
+    }
+
     const { content } = await client.download(uid, undefined, { uid: true });
     const mail = await simpleParser(content);
     const from = (mail.from?.value?.[0]?.address || "").toLowerCase();
