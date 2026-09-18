@@ -65,3 +65,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: node fetch-mail.mjs
+
+      # 무인 운영에서는 침묵이 정상과 구분되지 않는다. 실패를 메일로 알린다.
+      - name: 실패 시 관리자에게 알림
+        if: failure()
+        working-directory: .github/scripts
+        env:
+          MAIL_HOST: ${{ vars.SMTP_HOST || 'smtp.gmail.com' }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ALERT_TO: ${{ vars.NOTIFY_CC || 'kakwak123@gmail.com' }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node -e "process.exit(0)" 2>/dev/null || exit 0
+          npm install --no-audit --no-fund >/dev/null 2>&1 || true
+          node send-alert.mjs || true
