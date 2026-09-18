@@ -30,10 +30,18 @@
 
 만든 뒤:
 
-1. 계정에 **2단계 인증**을 켭니다 (앱 비밀번호의 전제 조건입니다).
+1. 계정에 **2단계 인증**을 켭니다.
+   <https://myaccount.google.com/signinoptions/twosv>
+   앱 비밀번호의 전제 조건입니다. 2단계 인증이 꺼져 있으면 앱 비밀번호 메뉴가
+   아예 나타나지 않고 "설정을 사용할 수 없습니다"만 뜹니다.
+   두 번째 단계로 전화번호나 인증앱 중 하나를 등록해야 합니다.
 2. <https://myaccount.google.com/apppasswords> 에서 **앱 비밀번호**를 만듭니다.
    16자리 문자열이 나옵니다. 이게 `MAIL_PASSWORD` 입니다.
-3. Gmail 설정 → **전달 및 POP/IMAP** → *IMAP 사용* 을 켭니다.
+   창을 닫으면 다시 볼 수 없으니 바로 GitHub 시크릿에 넣으세요.
+
+> IMAP은 따로 켤 필요가 없습니다. Google이 개인 Gmail 계정의 IMAP 토글을
+> 없애고 상시 활성으로 바꿨습니다. 설정 화면의 *전달 및 POP/IMAP* 탭에도
+> 켜기/끄기 라디오가 더 이상 없습니다.
 
 ## 2. GitHub 토큰 만들기
 
@@ -61,6 +69,8 @@ Settings → Secrets and variables → Actions → *New repository secret*
 
 ## 4. 동작 확인
 
+0. 시크릿이 하나라도 비어 있으면 워크플로는 실패하지 않고 조용히 건너뜁니다.
+   로그에 `시크릿이 아직 설정되지 않아 건너뜁니다` 가 찍히면 아직 덜 넣은 겁니다.
 1. Actions 탭 → **메일 수신함 확인** → *Run workflow* 로 수동 실행
 2. 전용 주소로 아무 메일이나 보내보고 이슈가 생기는지 확인
 3. 이슈에 `site-request` 라벨이 자동으로 붙고 PR이 열리는지 확인
