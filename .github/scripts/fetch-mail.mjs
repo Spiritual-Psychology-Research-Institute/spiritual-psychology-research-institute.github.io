@@ -85,6 +85,7 @@ const markSeen = async (uid) => {
 await client.connect();
 const lock = await client.getMailboxLock("INBOX");
 let created = 0;
+let hitCap = false;
 
 try {
   const uids = await client.search({ seen: false }, { uid: true });
@@ -92,7 +93,8 @@ try {
 
   for (const uid of uids || []) {
     if (created >= MAX_PER_RUN) {
-      console.log(`이번 실행 상한(${MAX_PER_RUN}건) 도달 - 나머지는 다음 실행에서 처리합니다.`);
+      console.log(`이번 실행 상한(${MAX_PER_RUN}건) 도달 - 남은 메일은 이어서 처리합니다.`);
+      hitCap = true;
       break;
     }
 
@@ -163,3 +165,20 @@ try {
 }
 
 console.log(`done: ${created} issue(s) created`);
+
+// 상한에 걸려 남은 메일이 있으면 스스로 한 번 더 깨운다.
+// GitHub 예약 실행이 몇 시간씩 밀릴 수 있어, 다음 크론을 기다리면
+// 남은 요청이 그만큼 묵는다. 처리한 메일은 읽음으로 표시되므로
+// 매 회차가 전진하고 무한 반복되지 않는다.
+if (hitCap) {
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPOSITORY}/dispatches`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${GITHUB_TOKEN}`,
+      accept: "application/vnd.github+json",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ event_type: "check-mail" }),
+  });
+  console.log(res.ok ? "남은 메일 처리를 위해 다음 실행을 예약했습니다." : `::warning::후속 실행 예약 실패 (${res.status})`);
+}
