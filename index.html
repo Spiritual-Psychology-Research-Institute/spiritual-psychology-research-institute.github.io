@@ -1036,6 +1036,95 @@
       }
 
       /* ——— location ——— */
+      /* ——— research ——— */
+      .research {
+        background: var(--paper);
+      }
+      .pub-list {
+        max-width: 1240px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+      .pub {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 44px 48px;
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 40px;
+        align-items: start;
+      }
+      .pub-aside {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .pub-year {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        color: var(--terra);
+        font-size: 26px;
+        line-height: 1.2;
+        letter-spacing: 0.06em;
+      }
+      .pub-kind {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .pub-title {
+        font-family: "Noto Serif KR", serif;
+        font-weight: 400;
+        /* fluid so long Korean titles don't overflow at browser zoom */
+        font-size: clamp(18px, 1.9vw, 23px);
+        line-height: 1.55;
+        color: var(--moss-deep);
+        margin: 0 0 14px;
+        word-break: keep-all;
+      }
+      .pub-title-en {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--muted);
+        margin: 0 0 22px;
+      }
+      .pub-body {
+        font-size: 15px;
+        color: var(--ink-soft);
+        line-height: 1.85;
+        margin: 0 0 24px;
+        word-break: keep-all;
+      }
+      .pub-keys {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .pub-keys li {
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        color: var(--moss-deep);
+        background: var(--bg-deep);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 14px;
+      }
+      .pub-note {
+        max-width: 1240px;
+        margin: 28px auto 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
       .location {
         background: var(--moss-deep);
         color: #f4efe6;
@@ -1308,6 +1397,11 @@
           grid-template-columns: 1fr;
           gap: 40px;
         }
+        .pub {
+          grid-template-columns: 1fr;
+          gap: 20px;
+          padding: 36px 26px;
+        }
         .about-portrait {
           position: static;
         }
@@ -1385,6 +1479,7 @@
       <ul>
         <li><a href="#about" class="nav-link">소개</a></li>
         <li><a href="#services" class="nav-link">상담 안내</a></li>
+        <li><a href="#research" class="nav-link">연구</a></li>
         <li><a href="#location" class="nav-link">오시는 길</a></li>
         <li><a href="#contact" class="nav-link">문의</a></li>
       </ul>
@@ -1661,11 +1756,61 @@
         </div>
       </section>
 
+      <!-- ——— RESEARCH ——— -->
+      <section id="research" class="research">
+        <div class="section-head">
+          <div class="section-num"><span class="line"></span>03 / 연구</div>
+          <h2 class="section-title">
+            상담실에서 길어 올린 질문을,<br /><span class="accent">글</span>로
+            이어갑니다.
+          </h2>
+        </div>
+
+        <div class="pub-list">
+          <article class="pub reveal">
+            <div class="pub-aside">
+              <div class="pub-year">2026</div>
+              <div class="pub-kind">논문 · 영성신학</div>
+            </div>
+            <div>
+              <h3 class="pub-title">
+                신자의 이중성 극복과 조에(zōē)의 통치 회복을 위한
+                레코히미엔토(수렴기도) 연구 — 융의 개성화 모델의 한계와 영의
+                유폐 해소를 중심으로
+              </h3>
+              <p class="pub-title-en">
+                Recogimiento as a Path beyond the Believer’s Divided Self: The
+                Limits of Jungian Individuation and the Restoration of Zōē’s
+                Reign
+              </p>
+              <p class="pub-body">
+                예배에서 경험한 깨어남이 일상으로 이어지지 않는 신자의 분열을,
+                혼적 자아와 몸의 본능 아래 영이 유폐된 상태로 읽어냅니다. 융의
+                페르소나–그림자 역학이 자기이해의 디딤돌은 되지만 주권의
+                이양에는 이르지 못한다고 보고, 오수나와 아빌라의 테레사가
+                심화시킨 수렴기도를 전인적 대안으로 제시합니다.
+              </p>
+              <ul class="pub-keys">
+                <li>수렴기도</li>
+                <li>아빌라의 테레사</li>
+                <li>개성화</li>
+                <li>영성신학</li>
+                <li>조에</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+
+        <p class="pub-note">
+          * 게재지와 발행 정보는 확정되는 대로 업데이트됩니다.
+        </p>
+      </section>
+
       <!-- ——— LOCATION ——— -->
       <section id="location" class="location">
         <div class="section-head">
           <div class="section-num">
-            <span class="line"></span>03 / 오시는 길
+            <span class="line"></span>04 / 오시는 길
           </div>
           <h2 class="section-title">
             상동역 7번 출구,<br /><span class="accent">10미터</span>의 가까움.
@@ -1854,7 +1999,7 @@
       // (more reliable than IntersectionObserver for this case: always
       // exactly one section is "current", no flicker between adjacent
       // sections, no dead zones at the top/bottom of the page)
-      const sections = ["about", "services", "location", "contact"]
+      const sections = ["about", "services", "research", "location", "contact"]
         .map((id) => document.getElementById(id))
         .filter(Boolean);
       const links = [...document.querySelectorAll(".nav-link")];
