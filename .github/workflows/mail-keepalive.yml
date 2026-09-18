@@ -59,7 +59,10 @@ jobs:
               -d '{"event_type":"check-mail"}' \
               "https://api.github.com/repos/$REPO/dispatches")
             echo "[$i/21] $(date -u +%H:%M) 메일 확인 요청 -> HTTP $code"
-            [ "$i" -lt 21 ] && sleep 900
+            # if 문으로 쓴다. [ ... ] && sleep 은 마지막 회차에서 조건이 거짓이
+            # 되어 종료코드 1 을 내고, bash -e 가 그것을 스텝 실패로 처리한다.
+            # 그러면 다음 회차를 띄우는 스텝이 실행되지 않아 자기 갱신이 끊긴다.
+            if [ "$i" -lt 21 ]; then sleep 900; fi
           done
 
       - name: 다음 회차 이어가기
