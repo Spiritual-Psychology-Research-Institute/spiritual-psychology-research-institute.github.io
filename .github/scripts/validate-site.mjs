@@ -6,7 +6,10 @@ import fs from "node:fs";
 import { ratios } from "./check-contrast.mjs";
 
 const BASE = process.env.BASE_REF || "origin/main";
-const ALLOW = [/^index\.html$/, /^404\.html$/, /^docs\//];
+const ALLOW = [/^index\.html$/, /^404\.html$/, /^docs\//, /^assets\/uploads\/[\w.-]+\.(jpe?g|png|webp)$/i];
+// 메일로 온 사진은 fetch-mail 이 1600px JPEG(보통 200~600KB)으로 줄여 둔다.
+// 이보다 크면 원본을 그대로 넣었다는 뜻이다. 사이트가 느려지므로 막는다.
+const MAX_UPLOAD_BYTES = 1.5 * 1024 * 1024;
 
 const fail = [];
 const ok = [];
@@ -21,6 +24,11 @@ for (const f of changed) {
   if (!ALLOW.some((re) => re.test(f))) fail.push(`허용되지 않은 파일 수정: ${f}`);
 }
 ok.push(`변경 파일 ${changed.length}개: ${changed.join(", ")}`);
+
+for (const f of changed.filter((f) => f.startsWith("assets/uploads/") && fs.existsSync(f))) {
+  const size = fs.statSync(f).size;
+  if (size > MAX_UPLOAD_BYTES) fail.push(`사진이 너무 큼: ${f} (${(size / 1048576).toFixed(1)}MB)`);
+}
 
 // 2) index.html 구조 검사.
 if (fs.existsSync("index.html")) {
@@ -47,6 +55,16 @@ if (fs.existsSync("index.html")) {
   }
 
   if (!/<title>.*<\/title>/.test(s)) fail.push("title 태그가 없습니다.");
+
+  // 사진을 넣었는데 파일을 커밋하지 않았으면 배포 후 깨진 그림이 된다.
+  const refs = [...s.matchAll(/(?:src|href|content)="(?:https:\/\/[^"\/]+\.github\.io\/)?(assets\/[^"#?]+)"/g)].map((m) => m[1]);
+  const missing = [...new Set(refs)].filter((p) => !fs.existsSync(decodeURI(p)));
+  if (missing.length) fail.push(`없는 파일을 가리킴: ${missing.join(", ")}`);
+  else ok.push(`참조한 파일 ${new Set(refs).size}개 모두 존재`);
+
+  // 스크린리더 사용자에게 사진이 무엇인지 알려야 한다 (CLAUDE.md 접근성).
+  const noAlt = [...s.matchAll(/<img\b[^>]*>/g)].map((m) => m[0]).filter((t) => !/\balt="/.test(t));
+  if (noAlt.length) fail.push(`alt 없는 img ${noAlt.length}개`);
 }
 
 // 3) 명도 대비 회귀. 절대 기준으로 막지 않는다 - 기존에도 미달 조합이 있어
