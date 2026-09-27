@@ -13,6 +13,7 @@ const {
   NOTIFY_CC,
   PR_TITLE,
   PR_URL,
+  PR_BODY,
   CHANGED_FILES,
   AUTO_MERGED,
   SITE_URL = "https://spiritual-psychology-research-institute.github.io/",
@@ -27,6 +28,11 @@ const transport = nodemailer.createTransport({
   auth: { user: MAIL_USER, pass: MAIL_PASSWORD },
 });
 
+// Claude 가 PR 본문의 <!--SUMMARY--> ... <!--/SUMMARY--> 사이에 요청자용
+// 요약을 적는다. 없으면 예전처럼 메일 제목으로 대신한다.
+const summary = ((PR_BODY || "").match(/<!--SUMMARY-->([\s\S]*?)<!--\/SUMMARY-->/)?.[1] || "")
+  .split("\n").map((l) => l.trim()).filter(Boolean).slice(0, 6).join("\n");
+
 const to = [REPLY_TO_EMAIL, ...(NOTIFY_CC ? [NOTIFY_CC] : [])].join(", ");
 
 await transport.sendMail({
@@ -36,7 +42,11 @@ await transport.sendMail({
   text: [
     "보내주신 요청대로 홈페이지를 수정했습니다.",
     "",
-    `· 수정 내용: ${PR_TITLE || "(제목 없음)"}`,
+    // 메일 제목만 되풀이하면 무엇이 바뀌었는지 알 수 없다. 요청자는 그래서
+    // 이미 고쳐진 것을 다시 요청했다. Claude 가 PR 본문에 적은 요약을 쓴다.
+    ...(summary
+      ? ["바뀐 내용:", ...summary.split("\n").map((l) => `  ${l}`), ""]
+      : [`· 수정 내용: ${PR_TITLE || "(제목 없음)"}`]),
     `· 홈페이지: ${SITE_URL}`,
     "",
     "반영까지 1~2분 정도 걸릴 수 있습니다.",

@@ -4,8 +4,10 @@
   "type": "module",
   "description": "CI-only helpers for the email->PR pipeline. Not shipped to the site.",
   "dependencies": {
+    "heic-convert": "^2.1.0",
     "imapflow": "^2.0.5",
     "mailparser": "^3.9.28",
-    "nodemailer": "^10.0.10"
+    "nodemailer": "^10.0.10",
+    "sharp": "^0.35.4"
   }
 }
