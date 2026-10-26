@@ -13,10 +13,22 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts load without blocking first paint: the Google Fonts CSS for
+         the two Korean families is ~575 KB (~140 KB compressed, 750+
+         @font-face rules). As a plain stylesheet it held up rendering of
+         the whole page; display=swap already means text first renders in
+         the fallback font, so applying the sheet late changes nothing
+         visually except that the page appears sooner. -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400&family=Cormorant+Garamond:ital,wght@1,400&display=swap" />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400&family=Cormorant+Garamond:ital,wght@1,400&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400&family=Cormorant+Garamond:ital,wght@1,400&display=swap" rel="stylesheet" />
+    </noscript>
     <style>
       :root {
         --bg: #f1ece0;
