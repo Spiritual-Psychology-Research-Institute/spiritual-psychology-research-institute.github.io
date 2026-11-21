@@ -43,7 +43,7 @@ jobs:
       - name: 의존성 설치
         if: steps.guard.outputs.ready == 'true'
         working-directory: .github/scripts
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: 회신 메일 발송
         if: steps.guard.outputs.ready == 'true'

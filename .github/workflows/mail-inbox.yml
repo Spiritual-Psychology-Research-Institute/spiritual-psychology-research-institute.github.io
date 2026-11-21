@@ -51,7 +51,7 @@ jobs:
       - name: 의존성 설치
         if: steps.guard.outputs.ready == 'true'
         working-directory: .github/scripts
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: 새 메일을 이슈로 변환
         if: steps.guard.outputs.ready == 'true'
@@ -106,5 +106,5 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           node -e "process.exit(0)" 2>/dev/null || exit 0
-          npm install --no-audit --no-fund >/dev/null 2>&1 || true
+          npm ci --no-audit --no-fund >/dev/null 2>&1 || true
           node send-alert.mjs || true
