@@ -1,0 +1,84 @@
+# Temporary read-only health check. Sends no mail, creates no issue or PR.
+name: diag-mail-smoke
+
+on:
+  push:
+    branches: [diag/mail-smoke-test]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 1 Anthropic API and model
+        continue-on-error: true
+        env:
+          KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          code=$(curl -s -o /tmp/a.json -w '%{http_code}' https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $KEY" -H 'anthropic-version: 2023-06-01' -H 'content-type: application/json' \
+            -d '{"model":"claude-sonnet-5","max_tokens":5,"messages":[{"role":"user","content":"Say OK"}]}')
+          echo "RESULT api http=$code type=$(jq -r '.error.type // "ok"' /tmp/a.json) msg=$(jq -r '.error.message // "" | .[0:140]' /tmp/a.json)"
+          [ "$code" = "200" ]
+
+      - name: 2 Automation token
+        continue-on-error: true
+        env:
+          TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          curl -sI -H "Authorization: Bearer $TOKEN" -H 'Accept: application/vnd.github+json' "https://api.github.com/repos/$REPO/issues?per_page=1" > /tmp/h.txt
+          echo "RESULT token status=$(head -1 /tmp/h.txt | tr -d '\r')"
+          echo "RESULT token expires=$(grep -i '^github-authentication-token-expiration' /tmp/h.txt | cut -d' ' -f2- | tr -d '\r')"
+          grep -qi '^HTTP/[0-9.]* 200' /tmp/h.txt
+
+      - name: 3 Dependencies and SMTP login
+        continue-on-error: true
+        working-directory: .github/scripts
+        env:
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+        run: |
+          npm install --no-audit --no-fund
+          node --input-type=module -e "
+            import nodemailer from 'nodemailer';
+            const t = nodemailer.createTransport({ host: 'smtp.gmail.com', port: 465, secure: true,
+              auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASSWORD } });
+            await t.verify();
+            console.log('RESULT smtp login ok');
+          "
+
+      - name: 4 Claude action end to end
+        id: claude
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: >-
+            --model claude-sonnet-5
+            --max-turns 2
+            --allowedTools "Read"
+          prompt: |
+            This is a health check. Do not use any tools and do not change anything.
+            Reply with exactly: SMOKE_OK
+
+      - name: 5 Summary
+        if: always()
+        env:
+          OUT: ${{ steps.claude.outputs.execution_file }}
+          OUTCOME: ${{ steps.claude.outcome }}
+        run: |
+          echo "RESULT claude-action outcome=$OUTCOME"
+          if [ -f "$OUT" ]; then
+            jq -r '.[] | select(.type=="result") | "RESULT claude-action is_error=\(.is_error) turns=\(.num_turns) cost=\(.total_cost_usd) text=\((.result // "")[0:40])"' "$OUT"
+          fi
