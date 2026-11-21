@@ -1,6 +1,9 @@
 // Poll a dedicated mailbox and turn each allowlisted message into a
 // `site-request` issue. Attachments are pushed to the `site-inbox` branch so
 // Claude can reach them without them ever landing on the live site.
+// Photos are shrunk and stripped of metadata first (prepare-image.mjs) and
+// stored at the exact path they would take on the site, so using one is a
+// single `git checkout` for Claude.
 //
 // PRIVACY: this repo is public, so issue bodies and workflow logs are public.
 // The sender's address is never written into the issue — only the request text
@@ -8,6 +11,7 @@
 import { ImapFlow } from "imapflow";
 import { simpleParser } from "mailparser";
 import { stripQuoted } from "./strip-quoted.mjs";
+import { isImage, prepareImage } from "./prepare-image.mjs";
 
 const {
   MAIL_HOST = "imap.gmail.com",
@@ -28,7 +32,8 @@ const ATTACH_BRANCH = "site-inbox";
 // 그만큼 동시에 뜨고 비용도 같이 뛴다. 넘친 메일은 읽지 않은 채로 두므로
 // 다음 폴링에서 이어서 처리된다.
 const MAX_PER_RUN = 3;
-const MAX_ATTACH_BYTES = 8 * 1024 * 1024;
+// Gmail 첨부 상한이 25MB 다. 사진은 여기서 줄이므로 원본 크기로 거르지 않는다.
+const MAX_ATTACH_BYTES = 25 * 1024 * 1024;
 // IMAP system flag. Built from a char code because the literal
 // backslash does not survive every editing path reliably.
 const SEEN = String.fromCharCode(92) + "Seen";
@@ -123,21 +128,41 @@ try {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
 
     const links = [];
-    for (const att of mail.attachments || []) {
-      if (!att.content || att.size > MAX_ATTACH_BYTES) {
-        links.push(`- ⚠️ \`${att.filename}\` — 너무 크거나 비어 있어 건너뜀`);
-        continue;
-      }
+    const photos = [];
+    const put = async (path, buf) => {
       await ensureBranch();
-      const path = `inbox/${stamp}/${slug(att.filename)}`;
       await gh(`/contents/${encodeURI(path)}`, {
         method: "PUT",
         body: JSON.stringify({
           message: `inbox: ${path}`,
-          content: att.content.toString("base64"),
+          content: buf.toString("base64"),
           branch: ATTACH_BRANCH,
         }),
       });
+    };
+
+    for (const [i, att] of (mail.attachments || []).entries()) {
+      const name = att.filename || `사진-${i + 1}`;
+      if (!att.content || att.size > MAX_ATTACH_BYTES) {
+        links.push(`- ⚠️ \`${name}\` — 너무 크거나 비어 있어 건너뜀`);
+        continue;
+      }
+
+      if (isImage(att)) {
+        const img = await prepareImage(att);
+        if (img.skip) {
+          links.push(`- ⚠️ \`${name}\` — ${img.skip}`);
+          continue;
+        }
+        // 사이트 주소에 들어갈 이름이라 영문/숫자로만 짓는다.
+        const path = `assets/uploads/${stamp.slice(0, 19)}-${i + 1}.jpg`;
+        await put(path, img.buffer);
+        photos.push(`- \`${path}\` — ${img.width}×${img.height}, 원래 이름 \`${name}\``);
+        continue;
+      }
+
+      const path = `inbox/${stamp}/${slug(name)}`;
+      await put(path, att.content);
       links.push(`- \`${path}\` (브랜치 \`${ATTACH_BRANCH}\`)`);
     }
 
@@ -148,7 +173,17 @@ try {
       "",
       text || "_(본문 없음)_",
       "",
-      links.length ? `## 첨부\n\n${links.join("\n")}` : "",
+      photos.length
+        ? [
+            "## 사진",
+            "",
+            `\`${ATTACH_BRANCH}\` 브랜치에 사이트용으로 줄여서 올려두었습니다 (긴 변 1600px, 위치정보 제거).`,
+            "",
+            ...photos,
+          ].join("\n")
+        : "",
+      "",
+      links.length ? `## 기타 첨부\n\n${links.join("\n")}` : "",
       "",
       "---",
       "`site-request` 라벨이 붙으면 Claude가 PR을 만듭니다.",
@@ -157,7 +192,13 @@ try {
 
     const issue = await gh("/issues", {
       method: "POST",
-      body: JSON.stringify({ title: `[요청] ${subject}`, body, labels: ["site-request"] }),
+      body: JSON.stringify({
+        title: `[요청] ${subject}`,
+        body,
+        // photo 라벨은 모델 선택에 쓴다. 사진 배치는 레이아웃 판단이 필요해
+        // 더 나은 모델로 돌리고, 문구 수정은 가장 싼 모델로 돌린다.
+        labels: photos.length ? ["site-request", "photo"] : ["site-request"],
+      }),
     });
     console.log(`created issue #${issue.number}`);
     created += 1;
