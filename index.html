@@ -1170,6 +1170,118 @@
         border-radius: 999px;
         padding: 5px 14px;
       }
+      .pub-venue {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--ink-soft);
+        margin: 0 0 22px;
+        word-break: keep-all;
+      }
+
+      /* Books stand on one continuous shelf: each item's bottom border meets
+         the next, so the covers read as objects rather than another card row.
+         The whole item is clickable through one link (.book-link::after), so
+         keyboard and screen-reader users get a single stop per book. */
+      .books {
+        max-width: 1240px;
+        margin: 0 auto 72px;
+      }
+      .books-title {
+        font-family: "Noto Serif KR", serif;
+        font-weight: 400;
+        font-size: clamp(20px, 2.2vw, 26px);
+        line-height: 1.5;
+        color: var(--moss-deep);
+        margin: 0 0 32px;
+      }
+      .book-shelf {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .book {
+        position: relative;
+        display: grid;
+        grid-template-columns: clamp(130px, 13vw, 200px) minmax(0, 1fr);
+        gap: 28px;
+        align-items: end;
+        padding: 0 28px;
+        border-bottom: 5px solid var(--terra);
+      }
+      /* shelf's cast shadow: a gradient strip, so neighbouring items join
+         without the seam a box-shadow would leave between them */
+      .book::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% + 5px);
+        height: 7px;
+        background: linear-gradient(
+          color-mix(in srgb, var(--ink) 22%, transparent),
+          transparent
+        );
+        pointer-events: none;
+      }
+      .book-cover {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 1px 3px 3px 1px;
+        box-shadow:
+          -1px 0 0 color-mix(in srgb, var(--ink) 18%, transparent),
+          5px 2px 12px color-mix(in srgb, var(--ink) 32%, transparent);
+        transform-origin: bottom center;
+        transition: transform 0.25s ease;
+      }
+      /* answers the visitor's pointer: the book lifts off the shelf */
+      .book:hover .book-cover,
+      .book:focus-within .book-cover {
+        transform: translateY(-8px);
+      }
+      .book-info {
+        padding-bottom: 20px;
+        min-width: 0;
+      }
+      .book-kind {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+      .book-title {
+        font-family: "Noto Serif KR", serif;
+        font-weight: 400;
+        font-size: clamp(18px, 1.7vw, 22px);
+        line-height: 1.5;
+        color: var(--moss-deep);
+        margin: 0 0 12px;
+        word-break: keep-all;
+      }
+      .book-meta {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--ink-soft);
+        margin: 0 0 4px;
+        word-break: keep-all;
+      }
+      .book-link {
+        display: inline-block;
+        margin-top: 14px;
+        font-size: 14px;
+        color: var(--moss-deep);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .book-link::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+      .book:hover .book-link {
+        color: var(--ink);
+      }
       .pub-note {
         max-width: 1240px;
         margin: 28px auto 0;
@@ -1453,6 +1565,16 @@
           grid-template-columns: 1fr;
           gap: 40px;
         }
+        .books {
+          margin-bottom: 56px;
+        }
+        .book-shelf {
+          grid-template-columns: 1fr;
+          row-gap: 44px;
+        }
+        .book {
+          grid-template-columns: 170px minmax(0, 1fr);
+        }
         .pub {
           grid-template-columns: 1fr;
           gap: 20px;
@@ -1482,6 +1604,14 @@
          the hero-frame as readable blocks (the 'floating decoration'
          pattern doesn't fit at narrow widths) */
       @media (max-width: 640px) {
+        .book {
+          grid-template-columns: 112px minmax(0, 1fr);
+          gap: 18px;
+          padding: 0 6px;
+        }
+        .book-info {
+          padding-bottom: 14px;
+        }
         .hero {
           padding: 130px 18px 64px;
         }
@@ -1850,6 +1980,65 @@
           </h2>
         </div>
 
+        <div class="books reveal">
+          <h3 class="books-title">책으로 만나기</h3>
+          <ul class="book-shelf">
+            <li class="book">
+              <img
+                class="book-cover"
+                src="assets/books/hyupsung-theology-11.jpg"
+                alt="협성신학논단 제11집 표지"
+                width="576"
+                height="782"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="book-info">
+                <p class="book-kind">논문 수록</p>
+                <h4 class="book-title">협성신학논단 제11집</h4>
+                <p class="book-meta">
+                  수록 논문: 신자의 이중성 극복과 조에(zōē)의 통치 회복을 위한
+                  거둠기도 연구
+                </p>
+                <p class="book-meta">협성대학교 신학대학, 2026</p>
+                <a
+                  class="book-link"
+                  href="https://product.kyobobook.co.kr/detail/S000222015939"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="협성신학논단 제11집, 교보문고에서 보기 (새 창)"
+                  >교보문고에서 보기 <span aria-hidden="true">→</span></a
+                >
+              </div>
+            </li>
+            <li class="book">
+              <img
+                class="book-cover"
+                src="assets/books/modern-psychoanalysis-christian-spirituality.jpg"
+                alt="현대 정신분석과 기독교 영성 표지"
+                width="400"
+                height="593"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="book-info">
+                <p class="book-kind">공저</p>
+                <h4 class="book-title">현대 정신분석과 기독교 영성</h4>
+                <p class="book-meta">이만홍, 김윤희, 김미희, 유현주</p>
+                <p class="book-meta">로뎀포레스트, 2022</p>
+                <a
+                  class="book-link"
+                  href="https://product.kyobobook.co.kr/detail/S000200572315"
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="현대 정신분석과 기독교 영성, 교보문고에서 보기 (새 창)"
+                  >교보문고에서 보기 <span aria-hidden="true">→</span></a
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+
         <div class="pub-list">
           <article class="pub reveal">
             <div class="pub-aside">
@@ -1866,6 +2055,9 @@
                 Recogimiento as a Path beyond the Believer’s Divided Self: The
                 Limits of Jungian Individuation and the Restoration of Zōē’s
                 Reign
+              </p>
+              <p class="pub-venue">
+                게재: 『협성신학논단』 제11집 (2026), 협성대학교 신학대학
               </p>
               <p class="pub-body">
                 예배에서 경험한 깨어남이 일상으로 이어지지 않는 신자의 분열을,
