@@ -2,8 +2,9 @@
 name: diag-mail-smoke
 
 on:
-  push:
-    branches: [diag/mail-smoke-test]
+  pull_request:
+    types: [opened]
+    branches: [main]
 
 jobs:
   smoke:
