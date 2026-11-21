@@ -3,7 +3,7 @@ name: diag-mail-smoke
 
 on:
   pull_request:
-    types: [opened]
+    types: [synchronize]
     branches: [main]
 
 jobs:
@@ -65,6 +65,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ github.token }}
           claude_args: >-
             --model claude-sonnet-5
             --max-turns 2
