@@ -157,7 +157,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/pull/${{ steps.findpr.outputs.pr }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
         run: |
-          npm install --no-audit --no-fund >/dev/null 2>&1 || true
+          npm ci --no-audit --no-fund >/dev/null 2>&1 || true
           node send-alert.mjs || true
 
       # PR 이 없다 = Claude 가 요청을 이해하지 못했거나 만들지 못했다.
@@ -183,7 +183,7 @@ jobs:
           else
             echo "::warning::질문 댓글이 없어 기본 문구로 보냅니다."
           fi
-          npm install --no-audit --no-fund >/dev/null 2>&1 || true
+          npm ci --no-audit --no-fund >/dev/null 2>&1 || true
           QUESTION="$q" node send-question.mjs || true
 
       - name: 회신 메일 발송
@@ -199,7 +199,7 @@ jobs:
           PR_URL: ${{ github.server_url }}/${{ github.repository }}/pull/${{ steps.findpr.outputs.pr }}
           CHANGED_FILES: ${{ steps.merge.outputs.files }}
           AUTO_MERGED: "true"
-        run: npm install --no-audit --no-fund && node send-reply.mjs
+        run: npm ci --no-audit --no-fund && node send-reply.mjs
 
       # 무인 운영에서는 침묵이 정상과 구분되지 않는다. 실패를 메일로 알린다.
       - name: 실패 시 관리자에게 알림
@@ -214,5 +214,5 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           node -e "process.exit(0)" 2>/dev/null || exit 0
-          npm install --no-audit --no-fund >/dev/null 2>&1 || true
+          npm ci --no-audit --no-fund >/dev/null 2>&1 || true
           node send-alert.mjs || true
